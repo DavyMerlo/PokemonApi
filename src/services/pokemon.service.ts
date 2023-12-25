@@ -7,6 +7,7 @@ import { SpriteResponse } from '../components/Sprite';
 import { PokemonDetailResponse } from '../components/PokemonDetail';
 import Pokemon from '../components/Pokemon';
 import Type from '../components/Type';
+import {getPokemons, getPokemonbyId} from '../repositories/pokemon.repository';
 
 
   const transformPokemon = (pokemon: any): Pokemon => {
@@ -25,73 +26,47 @@ import Type from '../components/Type';
     };
 };
 
-export const listPokemons = async (): Promise<Pokemon[]> => {
+export async function listOfPokemons() {
     try {
-        const allPokemonsFromDB: any[] = await db.pokemonDetails.findMany({
-            include: {
-                types: true,
-            },
-        });
-
-        const transformedPokemons: Pokemon[] = allPokemonsFromDB.map(transformPokemon);
+        const pokemons = await getPokemons();
+        const transformedPokemons: Pokemon[] = pokemons.map(transformPokemon);
         return transformedPokemons;
+
     } catch (error) {
-        console.error('Error fetching pokemons:', error);
-        throw new Error('Failed to fetch pokemons');
+        console.error('Error fetching teams:', error);
+        throw new Error('Failed to fetch teams');
     }
-};
+}
 
-export const getPokemonById = async (pokemonId: number): Promise<PokemonDetailResponse | null> => {
+export async function pokemonById(pokemonById: number) {
     try {
-        const foundPokemon: any = await db.pokemonDetails.findUnique({
-            where: {
-                id: pokemonId,
-            },
-            select: {
-                id: true,
-                name: true,
-                height: true,
-                weight: true,
-                order: true,
-                species:true,
-                stats: true,
-                moves: {
-                    include: {
-                        versionGroupDetails: true,
-                    },
-                },
-                abilities: true,
-                sprite: true,
-                types: true,
-            },
-        });
+        const pokemon = await getPokemonbyId(pokemonById);
 
-        const abilities: AbilityResponse[] = mapAbilities(foundPokemon.abilities);
-        const stats: StatResponse[] = mapStats(foundPokemon.stats);
-        const moves: MoveResponse[] = mapMoves(foundPokemon.moves);
-        const types: Type[] = mapTypes(foundPokemon.types);
-        const sprite: SpriteResponse = mapSprites(foundPokemon.sprite);
+        const abilities: AbilityResponse[] = mapAbilities(pokemon?.abilities || []);
+        const stats: StatResponse[] = mapStats(pokemon?.stats || []);
+        const moves: MoveResponse[] = mapMoves(pokemon?.moves || []);
+        const types: Type[] = mapTypes(pokemon?.types || []);
+        const sprite: SpriteResponse = mapSprites(pokemon?.sprite || []);
 
         const pokemonDetails: PokemonDetailResponse = {
-            id: foundPokemon.id,
-            name: foundPokemon.name,
-            height: foundPokemon.height,
-            weight: foundPokemon.weight,
-            order: foundPokemon.order,
-            species: foundPokemon.species,
+            id: pokemon?.id || 0,
+            name: pokemon?.name || 'Unknown',
+            height: pokemon?.height || 0,
+            weight: pokemon?.weight || 0,
+            order: pokemon?.order || 0,
+            species: pokemon?.species || 'Unknown',
             stats: stats,
             moves: moves,
             abilities: abilities,
-            sprites: sprite,
+            sprite: sprite,
             types: types,
         };
-
         return pokemonDetails;
     } catch (error) {
-        console.error('Error fetching Pokémon:', error);
-        throw new Error('Failed to fetch Pokémon');
+        console.error('Error fetching team:', error);
+        throw new Error('Failed to fetch team');
     }
-};
+}
 
 const mapAbilities = (abilities: any[]): AbilityResponse[] => {
     return abilities.map((ability: any) => ({

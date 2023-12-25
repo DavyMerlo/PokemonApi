@@ -8,3 +8,4 @@ export type PokemonTeam = {
     team: Team;
     teamId: number;
 };
+

@@ -7,7 +7,7 @@ import Type from './Type';
 export type PokemonDetailResponse = {
     id: number;
     name: string;
-    sprites: SpriteResponse;
+    sprite: SpriteResponse;
     types: Type[];
     height: number;
     weight: number;
