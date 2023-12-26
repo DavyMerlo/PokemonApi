@@ -4,6 +4,7 @@ import cors from 'cors';
 
 import { pokemonRouterV1, pokemonRouterV2 } from './routers/pokemon.router';
 import { teamRouterV1 } from './routers/team.router';
+import { searchRouterV1 } from './routers/search.router';
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use(cors());
 app.use(express.json());
 
 v1Router.use("/pokemons", pokemonRouterV1);
+v1Router.use("/search", searchRouterV1);
 v1Router.use("/teams", teamRouterV1);
 v1Router.use("/search", pokemonRouterV1);
 v2Router.use("/pokemons", pokemonRouterV2);

@@ -2,6 +2,7 @@ import {db} from '../utils/db.server';
 import { PokemonDetailResponse } from '../components/PokemonDetail';
 import Pokemon from '../components/Pokemon';
 import SortingOptions from '../enums/SortingOptions';
+import { off } from 'process';
 
 export const getPokemonsFromDB = async (sortParam: string | undefined): Promise<Pokemon[]> => {
     try {
@@ -22,7 +23,6 @@ export const getPokemonsFromDB = async (sortParam: string | undefined): Promise<
             },
             orderBy: orderByOptions[sortParam],
         });
-
         return allPokemonsFromDB;
     } catch (error) {
         throw new Error('Failed to fetch pokemons');
@@ -61,9 +61,32 @@ export const getPokemonFromDBbyId = async (pokemonId: number): Promise<PokemonDe
     }
 };
 
+export const searchPokemonsFromDB = async (query: string, limit: string | undefined): Promise<Pokemon[]> => {
+    try {
+        const searchQuery: any = query ? {
+            OR: [
+                { name: { contains: query, mode: 'insensitive' } },
+                { types: { some: { name: { contains: query, mode: 'insensitive' } } } },
+            ],
+        } : {};
+
+        const parsedLimit: number | undefined = limit ? parseInt(limit, 10) : undefined;
+        const allPokemonsFromDB: any[] = await db.pokemonDetails.findMany({
+            where: searchQuery,
+            take: parsedLimit,
+            include: {
+                types: true,
+            },
+        });
+        return allPokemonsFromDB;
+    } catch (error) {
+        throw new Error('Failed to fetch pokemons');
+    }
+};
+
 export const getPokemonsFromDBPaginated = async (sortParam: string | undefined, 
     page: number, pageSize: number, 
-    offset: number | undefined, limit: number | undefined): Promise<Pokemon[]> => {
+    offset: string | undefined, limit: string | undefined): Promise<Pokemon[]> => {
     try {
         const orderByOptions: Record<string, any> = {
             [SortingOptions.NAME_ASC]: { name: 'asc' },
@@ -76,11 +99,14 @@ export const getPokemonsFromDBPaginated = async (sortParam: string | undefined,
             sortParam = SortingOptions.ID_ASC;
         }
 
-        const skip = (page - 1) * pageSize + (offset ?? 0);
+        const parsedLimit: number | undefined = limit ? parseInt(limit, 10) : undefined;
+        const parsedOffset: number | undefined = offset ? parseInt(offset, 10) : undefined;
+
+        const skip = (page - 1) * pageSize + (parsedOffset ?? 0);
         let take = pageSize;
 
-        if (limit && limit < pageSize) {
-            take = limit;
+        if (parsedLimit && parsedLimit < pageSize) {
+            take = parsedLimit;
         }
 
         const allPokemonsFromDB: any[] = await db.pokemonDetails.findMany({

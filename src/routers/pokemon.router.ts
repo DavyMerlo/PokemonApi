@@ -18,24 +18,6 @@ pokemonRouterV1.get("/", async (request: Request, response: Response) => {
     }
 });
 
-pokemonRouterV2.get("/", async (request: Request, response: Response) => {
-    try {
-        const page = Number(request.query.page) || 1;
-        const pageSize = Number(request.query.pageSize) || 150;
-        const sort = request.query.sort as string | undefined;
-        const limit = request.query.limit as number | undefined;
-        const offset = request.query.offset as number | undefined;
-        const pokemons = await PokemonService.ListOfPokemonsPaginated(sort, page, pageSize, offset, limit);
-        if (pokemons.length > 0) {
-            return response.status(200).json(pokemons);
-        }
-        return response.status(404).json("No pokemons found");
-    } catch (error: any) {
-        return response.status(500).json(error.message);
-    }
-});
-
-
 pokemonRouterV1.get("/:id", async(request: Request, response: Response) => {
     const id: number = parseInt(request.params.id, 10);
     try{
@@ -45,6 +27,23 @@ pokemonRouterV1.get("/:id", async(request: Request, response: Response) => {
         }
         return response.status(404).json("Pokemon could not be found");
     }catch(error : any){
+        return response.status(500).json(error.message);
+    }
+});
+
+pokemonRouterV2.get("/", async (request: Request, response: Response) => {
+    try {
+        const page = Number(request.query.page) || 1;
+        const pageSize = Number(request.query.pageSize) || 150;
+        const sort = request.query.sort as string | undefined;
+        const limit = request.query.limit as string | undefined;
+        const offset = request.query.offset as string | undefined;
+        const pokemons = await PokemonService.ListOfPokemonsPaginated(sort, page, pageSize, offset, limit);
+        if (pokemons.length > 0) {
+            return response.status(200).json(pokemons);
+        }
+        return response.status(404).json("No pokemons found");
+    } catch (error: any) {
         return response.status(500).json(error.message);
     }
 });

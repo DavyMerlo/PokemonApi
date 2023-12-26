@@ -6,7 +6,7 @@ import { SpriteResponse } from '../components/Sprite';
 import { PokemonDetailResponse } from '../components/PokemonDetail';
 import Pokemon from '../components/Pokemon';
 import Type from '../components/Type';
-import {getPokemonFromDBbyId, getPokemonsFromDB, getPokemonsFromDBPaginated} from '../repositories/pokemon.repository';
+import {getPokemonFromDBbyId, getPokemonsFromDB, getPokemonsFromDBPaginated, searchPokemonsFromDB} from '../repositories/pokemon.repository';
 import SortingOptions from '../enums/SortingOptions';
 
 
@@ -36,7 +36,7 @@ export async function listOfPokemons(sortParam: string | undefined) {
 
 export async function ListOfPokemonsPaginated(sort: string | undefined, 
     page: number, pageSize: number, 
-    offset: number | undefined, limit: number | undefined) {
+    offset: string | undefined, limit: string | undefined) {
     try {
         const pokemonFromDB = await getPokemonsFromDBPaginated(sort, page, pageSize, offset, limit);
         let mappedPokemon: Pokemon[] = pokemonFromDB.map(mapPokemon);
@@ -77,22 +77,19 @@ export async function pokemonById(pokemonById: number) {
     }
 }
 
-// export async function searchPokemon (searchQuery: string, limit: number | undefined) {
+export async function searchPokemons(query: string, limit: string | undefined) {
+    try {
+        const pokemonsFromDB = await searchPokemonsFromDB(query, limit);
+        let mappedPokemons: Pokemon[] = pokemonsFromDB.map(mapPokemon);
+        console.log(mappedPokemons);
+        return mappedPokemons;
 
-//     const pokemons = await getPokemons();
-//     let transformedPokemons: Pokemon[] = pokemons.map(transformPokemon);
+    } catch (error) {
+        throw new Error('Failed to fetch pokemons');
+    }
+}
 
-//     if (searchQuery) {
-//         const lowercaseQuery = searchQuery.toLowerCase();
-//         transformedPokemons = transformedPokemons.filter(pokemon =>
-//             pokemon.name.toLowerCase().includes(lowercaseQuery)
-//         );
-//     }
-
-//     if (limit && transformedPokemons.length > limit) {
-//         transformedPokemons = transformedPokemons.slice(0, limit);
-//     }
-// }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const mapPokemon = (pokemon: any): Pokemon => {
     const types: Type[] = Array.isArray(pokemon.types) && pokemon.types.length > 0
