@@ -54,7 +54,6 @@ export const getPokemonFromDBbyId = async (pokemonId: number): Promise<PokemonDe
                 types: true,
             },
         });
-        console.log(pokemonFromDB);
         return pokemonFromDB;
     } catch (error) {
         throw new Error('Failed to fetch Pokemon');

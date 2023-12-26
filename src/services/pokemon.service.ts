@@ -8,6 +8,7 @@ import Pokemon from '../components/Pokemon';
 import Type from '../components/Type';
 import {getPokemonFromDBbyId, getPokemonsFromDB, getPokemonsFromDBPaginated, searchPokemonsFromDB} from '../repositories/pokemon.repository';
 import SortingOptions from '../enums/SortingOptions';
+import ErrorResponse from '../components/Error';
 
 
 export async function listOfPokemons(
@@ -31,7 +32,11 @@ export async function listOfPokemons(
         return mappedPokemons;
 
     } catch (error) {
-        throw new Error('Failed to fetch pokemons');
+        const errorResponse: ErrorResponse = {
+            error: 'Failed to fetch pokemons',
+            error_message: 'There was an issue fetching the Pokemon data.',
+        };
+        throw errorResponse;
     }
 }
 
@@ -103,7 +108,6 @@ export async function searchPokemons(
     try {
         const pokemonsFromDB = await searchPokemonsFromDB(query, limit);
         let mappedPokemons: Pokemon[] = pokemonsFromDB.map(mapPokemon);
-        console.log(mappedPokemons);
         return mappedPokemons;
 
     } catch (error) {
@@ -184,3 +188,10 @@ const mapSprites = (sprite: any): Sprite => {
     };
     return mappedSprite;
 };
+
+function generateErrorResponse(error: any): ErrorResponse {
+    return {
+        error: error.error ,
+        error_message: error.message || 'Unknown error occurred',
+    };
+}
