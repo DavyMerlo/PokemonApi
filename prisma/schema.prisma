@@ -15,7 +15,7 @@ model Pokemon {
   name      String
   details   PokemonDetails @relation(fields: [detailsId], references: [id])
   detailsId Int
-  teams     PokemonTeam[] // Establishing relation to PokemonTeam
+  teams     PokemonTeam[]
 }
 
 model PokemonDetails {
@@ -30,7 +30,7 @@ model PokemonDetails {
   species   String
   pokemons  Pokemon[]
   types     Type[]
-  sprite    Sprite? // Change 'sprites' to 'sprite' and make it optional with '?'
+  sprite    Sprite?
 }
 
 model Sprite {
@@ -43,7 +43,7 @@ model Sprite {
   back_female        String?
   back_shiny         String?
   back_shiny_female  String?
-  pokemonDetail      PokemonDetails? @relation(fields: [pokemonDetailsId], references: [id]) // Make it optional with '?'
+  pokemonDetail      PokemonDetails? @relation(fields: [pokemonDetailsId], references: [id])
   pokemonDetailsId   Int?            @unique
 }
 
@@ -116,7 +116,7 @@ model PokemonTeam {
   team      Team    @relation(fields: [teamId], references: [id])
   teamId    Int
 
-  @@unique([pokemonId, teamId]) // Ensure uniqueness of pairs (pokemon, team)
+  @@unique([pokemonId, teamId])
 }
 
 model TeamUser {
