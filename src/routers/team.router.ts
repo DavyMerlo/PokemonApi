@@ -2,9 +2,9 @@ import express from 'express';
 import type { Request, Response } from 'express';
 import * as TeamService from '../services/team.service';
 
-export const teamRouter = express.Router();
+export const teamRouterV1 = express.Router();
 
-teamRouter.get("/", async(request: Request, response: Response) => {
+teamRouterV1.get("/", async(request: Request, response: Response) => {
     try{
         const teams = await TeamService.listOfTeams();
         if(teams){
@@ -16,7 +16,7 @@ teamRouter.get("/", async(request: Request, response: Response) => {
     }
 });
 
-teamRouter.get("/:id", async(request: Request, response: Response) => {
+teamRouterV1.get("/:id", async(request: Request, response: Response) => {
     const id: number = parseInt(request.params.id, 10);
     try{
         const team = await TeamService.teamById(id);

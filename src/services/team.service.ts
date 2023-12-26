@@ -1,16 +1,14 @@
 
 import { PokemonTeam } from '../components/PokemonTeam';
 import { Team } from '../components/Team';
-import {getTeams, getTeambyId } from '../repositories/team.repository';
+import {getTeamsFromDB, getTeambyIdFromDB } from '../repositories/team.repository';
 
 export async function listOfTeams() : Promise<Team[]> {
     try {
-        const listOfTeams : PokemonTeam[] = await getTeams();
+        const listOfTeams : PokemonTeam[] = await getTeamsFromDB();
         const teamsWithPokemonIds = mapTeams(listOfTeams);
-
         return teamsWithPokemonIds;
     } catch (error) {
-        console.error('Error fetching teams:', error);
         throw new Error('Failed to fetch teams');
     }
 }
@@ -37,11 +35,10 @@ export async function mapTeams(listOfTeams: PokemonTeam[]): Promise<Team[]> {
 
 export async function teamById(teamId: number) {
     try {
-        const team = await getTeambyId(teamId);
+        const team = await getTeambyIdFromDB(teamId);
         console.log('Team:', team);
         return team;
     } catch (error) {
-        console.error('Error fetching team:', error);
         throw new Error('Failed to fetch team');
     }
 }

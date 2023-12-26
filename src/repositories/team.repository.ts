@@ -2,7 +2,7 @@ import { PokemonTeam } from '../components/PokemonTeam';
 import { Team } from '../components/Team';
 import {db} from '../utils/db.server';
 
-export const getTeams = async (): Promise<PokemonTeam[]> => {
+export const getTeamsFromDB = async (): Promise<PokemonTeam[]> => {
     try {
         const allTeamsFromDB: any[] = await db.pokemonTeam.findMany({
             include: {
@@ -17,13 +17,12 @@ export const getTeams = async (): Promise<PokemonTeam[]> => {
         });
         return allTeamsFromDB;
     } catch (error) {
-        console.error('Error fetching pokemons:', error);
-        throw new Error('Failed to fetch pokemons');
+        throw new Error('Failed to fetch teams');
     }
 };
 
 
-export const getTeambyId = async (teamId: number): Promise<Team | null> => {
+export const getTeambyIdFromDB = async (teamId: number): Promise<Team | null> => {
     try{
         const TeamFromDB: any = await db.team.findUnique({
             where: {
@@ -41,7 +40,6 @@ export const getTeambyId = async (teamId: number): Promise<Team | null> => {
         return TeamFromDB;
     }
     catch(error){
-        console.log("Error fetching TeamId: " + teamId);
-        throw new Error('Failed to fetch pokemon');
+        throw new Error('Failed to fetch team');
     }
 }

@@ -1,4 +1,3 @@
-import {db} from '../utils/db.server';
 import { AbilityResponse } from '../components/Ability';
 import { StatResponse } from '../components/Stat';
 import { VersionGroupDetailReponse } from '../components/VersionGroupDetail';
@@ -7,10 +6,95 @@ import { SpriteResponse } from '../components/Sprite';
 import { PokemonDetailResponse } from '../components/PokemonDetail';
 import Pokemon from '../components/Pokemon';
 import Type from '../components/Type';
-import {getPokemons, getPokemonbyId} from '../repositories/pokemon.repository';
+import {getPokemonFromDBbyId, getPokemonsFromDB, getPokemonsFromDBPaginated} from '../repositories/pokemon.repository';
+import SortingOptions from '../enums/SortingOptions';
 
 
-  const transformPokemon = (pokemon: any): Pokemon => {
+export async function listOfPokemons(sortParam: string | undefined) {
+    try {
+        const pokemonsFromDB = await getPokemonsFromDB(sortParam);
+        let mappedPokemons: Pokemon[] = pokemonsFromDB.map(mapPokemon);
+        if (sortParam) {
+            if (sortParam === SortingOptions.NAME_DESC) {
+                mappedPokemons.sort((a, b) => {
+                    const comparison = a.name.localeCompare(b.name);
+                    return SortingOptions.NAME_DESC ? -comparison : comparison;
+                });
+            }
+            if (sortParam === SortingOptions.ID_DESC) {
+                mappedPokemons.sort((a, b) => {
+                    return SortingOptions.ID_DESC ? b.id - a.id : a.id - b.id;
+                });
+            }
+        }
+        return mappedPokemons;
+
+    } catch (error) {
+        throw new Error('Failed to fetch pokemons');
+    }
+}
+
+export async function ListOfPokemonsPaginated(sort: string | undefined, 
+    page: number, pageSize: number, 
+    offset: number | undefined, limit: number | undefined) {
+    try {
+        const pokemonFromDB = await getPokemonsFromDBPaginated(sort, page, pageSize, offset, limit);
+        let mappedPokemon: Pokemon[] = pokemonFromDB.map(mapPokemon);
+        return mappedPokemon;
+
+    } catch (error) {
+        throw new Error('Failed to fetch pokemons');
+    }
+}
+
+
+export async function pokemonById(pokemonById: number) {
+    try {
+        const pokemonFromDB = await getPokemonFromDBbyId(pokemonById);
+
+        const abilities: AbilityResponse[] = mapAbilities(pokemonFromDB?.abilities || []);
+        const stats: StatResponse[] = mapStats(pokemonFromDB?.stats || []);
+        const moves: MoveResponse[] = mapMoves(pokemonFromDB?.moves || []);
+        const types: Type[] = mapTypes(pokemonFromDB?.types || []);
+        const sprite: SpriteResponse = mapSprites(pokemonFromDB?.sprite || []);
+
+        const pokemonDetails: PokemonDetailResponse = {
+            id: pokemonFromDB?.id || 0,
+            name: pokemonFromDB?.name || 'Unknown',
+            height: pokemonFromDB?.height || 0,
+            weight: pokemonFromDB?.weight || 0,
+            order: pokemonFromDB?.order || 0,
+            species: pokemonFromDB?.species || 'Unknown',
+            stats: stats,
+            moves: moves,
+            abilities: abilities,
+            sprite: sprite,
+            types: types,
+        };
+        return pokemonDetails;
+    } catch (error) {
+        throw new Error('Failed to fetch pokemon');
+    }
+}
+
+// export async function searchPokemon (searchQuery: string, limit: number | undefined) {
+
+//     const pokemons = await getPokemons();
+//     let transformedPokemons: Pokemon[] = pokemons.map(transformPokemon);
+
+//     if (searchQuery) {
+//         const lowercaseQuery = searchQuery.toLowerCase();
+//         transformedPokemons = transformedPokemons.filter(pokemon =>
+//             pokemon.name.toLowerCase().includes(lowercaseQuery)
+//         );
+//     }
+
+//     if (limit && transformedPokemons.length > limit) {
+//         transformedPokemons = transformedPokemons.slice(0, limit);
+//     }
+// }
+
+const mapPokemon = (pokemon: any): Pokemon => {
     const types: Type[] = Array.isArray(pokemon.types) && pokemon.types.length > 0
         ? pokemon.types.map((type: any) => ({
             name: type.name,
@@ -25,48 +109,6 @@ import {getPokemons, getPokemonbyId} from '../repositories/pokemon.repository';
         types,
     };
 };
-
-export async function listOfPokemons() {
-    try {
-        const pokemons = await getPokemons();
-        const transformedPokemons: Pokemon[] = pokemons.map(transformPokemon);
-        return transformedPokemons;
-
-    } catch (error) {
-        console.error('Error fetching teams:', error);
-        throw new Error('Failed to fetch teams');
-    }
-}
-
-export async function pokemonById(pokemonById: number) {
-    try {
-        const pokemon = await getPokemonbyId(pokemonById);
-
-        const abilities: AbilityResponse[] = mapAbilities(pokemon?.abilities || []);
-        const stats: StatResponse[] = mapStats(pokemon?.stats || []);
-        const moves: MoveResponse[] = mapMoves(pokemon?.moves || []);
-        const types: Type[] = mapTypes(pokemon?.types || []);
-        const sprite: SpriteResponse = mapSprites(pokemon?.sprite || []);
-
-        const pokemonDetails: PokemonDetailResponse = {
-            id: pokemon?.id || 0,
-            name: pokemon?.name || 'Unknown',
-            height: pokemon?.height || 0,
-            weight: pokemon?.weight || 0,
-            order: pokemon?.order || 0,
-            species: pokemon?.species || 'Unknown',
-            stats: stats,
-            moves: moves,
-            abilities: abilities,
-            sprite: sprite,
-            types: types,
-        };
-        return pokemonDetails;
-    } catch (error) {
-        console.error('Error fetching team:', error);
-        throw new Error('Failed to fetch team');
-    }
-}
 
 const mapAbilities = (abilities: any[]): AbilityResponse[] => {
     return abilities.map((ability: any) => ({

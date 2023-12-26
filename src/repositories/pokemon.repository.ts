@@ -1,23 +1,36 @@
 import {db} from '../utils/db.server';
 import { PokemonDetailResponse } from '../components/PokemonDetail';
 import Pokemon from '../components/Pokemon';
+import SortingOptions from '../enums/SortingOptions';
 
-export const getPokemons = async (): Promise<Pokemon[]> => {
+export const getPokemonsFromDB = async (sortParam: string | undefined): Promise<Pokemon[]> => {
     try {
+        const orderByOptions: Record<string, any> = {
+            [SortingOptions.NAME_ASC]: { name: 'asc' },
+            [SortingOptions.NAME_DESC]: { name: 'desc' },
+            [SortingOptions.ID_ASC]: { id: 'asc' },
+            [SortingOptions.ID_DESC]: { id: 'desc' },
+        };
+
+        if (!sortParam) {
+            sortParam = SortingOptions.ID_ASC;
+        }
+
         const allPokemonsFromDB: any[] = await db.pokemonDetails.findMany({
             include: {
                 types: true,
             },
+            orderBy: orderByOptions[sortParam],
         });
 
         return allPokemonsFromDB;
     } catch (error) {
-        console.error('Error fetching pokemons:', error);
         throw new Error('Failed to fetch pokemons');
     }
 };
 
-export const getPokemonbyId = async (pokemonId: number): Promise<PokemonDetailResponse | null> => {
+
+export const getPokemonFromDBbyId = async (pokemonId: number): Promise<PokemonDetailResponse | null> => {
     try {
         const pokemonFromDB: any = await db.pokemonDetails.findUnique({
             where: {
@@ -44,7 +57,43 @@ export const getPokemonbyId = async (pokemonId: number): Promise<PokemonDetailRe
         console.log(pokemonFromDB);
         return pokemonFromDB;
     } catch (error) {
-        console.error('Error fetching Pokémon:', error);
-        throw new Error('Failed to fetch Pokémon');
+        throw new Error('Failed to fetch Pokemon');
+    }
+};
+
+export const getPokemonsFromDBPaginated = async (sortParam: string | undefined, 
+    page: number, pageSize: number, 
+    offset: number | undefined, limit: number | undefined): Promise<Pokemon[]> => {
+    try {
+        const orderByOptions: Record<string, any> = {
+            [SortingOptions.NAME_ASC]: { name: 'asc' },
+            [SortingOptions.NAME_DESC]: { name: 'desc' },
+            [SortingOptions.ID_ASC]: { id: 'asc' },
+            [SortingOptions.ID_DESC]: { id: 'desc' },
+        };
+
+        if (!sortParam) {
+            sortParam = SortingOptions.ID_ASC;
+        }
+
+        const skip = (page - 1) * pageSize + (offset ?? 0);
+        let take = pageSize;
+
+        if (limit && limit < pageSize) {
+            take = limit;
+        }
+
+        const allPokemonsFromDB: any[] = await db.pokemonDetails.findMany({
+            include: {
+                types: true,
+            },
+            orderBy: orderByOptions[sortParam],
+            skip,
+            take
+        });
+
+        return allPokemonsFromDB;
+    } catch (error) {
+        throw new Error('Failed to fetch paginated pokemons');
     }
 };

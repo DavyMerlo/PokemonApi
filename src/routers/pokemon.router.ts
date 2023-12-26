@@ -2,22 +2,41 @@ import express from 'express';
 import type { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import * as PokemonService from '../services/pokemon.service';
+export const pokemonRouterV1 = express.Router();
+export const pokemonRouterV2 = express.Router();
 
-export const pokemonRouter = express.Router();
-
-pokemonRouter.get("/", async(request: Request, response: Response) => {
-    try{
-        const pokemons = await PokemonService.listOfPokemons();
-        if(pokemons){
+pokemonRouterV1.get("/", async (request: Request, response: Response) => {
+    try {
+        const sortParameter = request.query.sort as string | undefined;
+        const pokemons = await PokemonService.listOfPokemons(sortParameter);
+        if (pokemons.length > 0) {
             return response.status(200).json(pokemons);
         }
         return response.status(404).json("No pokemons found");
-    }catch(error : any){
+    } catch (error: any) {
         return response.status(500).json(error.message);
     }
-})
+});
 
-pokemonRouter.get("/:id", async(request: Request, response: Response) => {
+pokemonRouterV2.get("/", async (request: Request, response: Response) => {
+    try {
+        const page = Number(request.query.page) || 1;
+        const pageSize = Number(request.query.pageSize) || 150;
+        const sort = request.query.sort as string | undefined;
+        const limit = request.query.limit as number | undefined;
+        const offset = request.query.offset as number | undefined;
+        const pokemons = await PokemonService.ListOfPokemonsPaginated(sort, page, pageSize, offset, limit);
+        if (pokemons.length > 0) {
+            return response.status(200).json(pokemons);
+        }
+        return response.status(404).json("No pokemons found");
+    } catch (error: any) {
+        return response.status(500).json(error.message);
+    }
+});
+
+
+pokemonRouterV1.get("/:id", async(request: Request, response: Response) => {
     const id: number = parseInt(request.params.id, 10);
     try{
         const pokemon = await PokemonService.pokemonById(id);
@@ -28,4 +47,4 @@ pokemonRouter.get("/:id", async(request: Request, response: Response) => {
     }catch(error : any){
         return response.status(500).json(error.message);
     }
-})
+});
