@@ -61,3 +61,22 @@ export const addTeamToDb = async (name: string): Promise<Team> => {
         throw new Error('Failed to add team to the database');
     }
 };
+
+export const checkTeamExistsInDB = async (teamId: number): Promise<boolean> => {
+    try {
+        const team = await db.team.findUnique({
+            where: {
+                id: teamId,
+            },
+        });
+
+        return !!team;
+    } catch (error) {
+        throw new Error('Failed to check');
+    }
+};
+
+
+
+
+

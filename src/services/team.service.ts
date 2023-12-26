@@ -1,5 +1,5 @@
 import { Team } from '../components/Team';
-import { getTeamsFromDB, getTeambyIdFromDB, addTeamToDb } from '../repositories/team.repository';
+import { getTeamsFromDB, getTeambyIdFromDB, addTeamToDb, checkTeamExistsInDB } from '../repositories/team.repository';
 
 export async function listOfTeams(): Promise<Team[]> {
     try {
@@ -36,6 +36,16 @@ export async function addNewTeam(name: string): Promise<Team> {
     }
 }
 
+export async function checkTeamExists(teamId: number) {
+    try{
+        const teamExists = await checkTeamExistsInDB(teamId);
+        return teamExists;
+    }
+    catch(error){
+        throw new Error('Failed to check');
+    }
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////
 export async function mapTeam(team: Team): Promise<Team> {
@@ -46,3 +56,4 @@ export async function mapTeam(team: Team): Promise<Team> {
         pokemons: pokemons,
     };
 }
+
