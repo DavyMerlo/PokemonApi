@@ -10,7 +10,8 @@ import {getPokemonFromDBbyId, getPokemonsFromDB, getPokemonsFromDBPaginated, sea
 import SortingOptions from '../enums/SortingOptions';
 
 
-export async function listOfPokemons(sortParam: string | undefined) {
+export async function listOfPokemons(
+    sortParam: string | undefined) {
     try {
         const pokemonsFromDB = await getPokemonsFromDB(sortParam);
         let mappedPokemons: Pokemon[] = pokemonsFromDB.map(mapPokemon);
@@ -34,21 +35,40 @@ export async function listOfPokemons(sortParam: string | undefined) {
     }
 }
 
-export async function ListOfPokemonsPaginated(sort: string | undefined, 
-    page: number, pageSize: number, 
-    offset: string | undefined, limit: string | undefined) {
-    try {
-        const pokemonFromDB = await getPokemonsFromDBPaginated(sort, page, pageSize, offset, limit);
-        let mappedPokemon: Pokemon[] = pokemonFromDB.map(mapPokemon);
-        return mappedPokemon;
-
-    } catch (error) {
-        throw new Error('Failed to fetch pokemons');
-    }
+export async function ListOfPokemonsPaginated(
+    sort: string | undefined, 
+    page: number, 
+    pageSize: number, 
+    offset: number | undefined, 
+    limit: number | undefined,
+    baseUrl: string) {
+        try {
+            const pokemonFromDB = await getPokemonsFromDBPaginated(
+                sort, page, pageSize, offset, limit);
+            let mappedPokemon: Pokemon[] = pokemonFromDB.map(mapPokemon);
+    
+            const countPokemon = (await getPokemonsFromDB(undefined)).length;
+            const pages: number = Math.ceil(countPokemon / pageSize);
+    
+            const nextUrl = page < pages ? `${baseUrl}?page=${page + 1}&pageSize=${pageSize}` : null;
+            const previousUrl = page > 1 ? `${baseUrl}?page=${page - 1}&pageSize=${pageSize}` : null;
+            const metaData = {
+                total: countPokemon,
+                pages: pages,
+                page: page,
+                next: nextUrl,
+                previous: previousUrl,
+            };
+    
+            return { data: mappedPokemon, metadata: metaData };
+        } catch (error) {
+            throw new Error('Failed to fetch pokemons');
+        }
 }
 
 
-export async function pokemonById(pokemonById: number) {
+export async function pokemonById(
+    pokemonById: number) {
     try {
         const pokemonFromDB = await getPokemonFromDBbyId(pokemonById);
 
@@ -60,11 +80,11 @@ export async function pokemonById(pokemonById: number) {
 
         const pokemonDetails: PokemonDetailResponse = {
             id: pokemonFromDB?.id || 0,
-            name: pokemonFromDB?.name || 'Unknown',
+            name: pokemonFromDB?.name || '',
             height: pokemonFromDB?.height || 0,
             weight: pokemonFromDB?.weight || 0,
             order: pokemonFromDB?.order || 0,
-            species: pokemonFromDB?.species || 'Unknown',
+            species: pokemonFromDB?.species || '',
             stats: stats,
             moves: moves,
             abilities: abilities,
@@ -77,7 +97,9 @@ export async function pokemonById(pokemonById: number) {
     }
 }
 
-export async function searchPokemons(query: string, limit: string | undefined) {
+export async function searchPokemons(
+    query: string, 
+    limit: string | undefined) {
     try {
         const pokemonsFromDB = await searchPokemonsFromDB(query, limit);
         let mappedPokemons: Pokemon[] = pokemonsFromDB.map(mapPokemon);

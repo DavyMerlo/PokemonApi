@@ -36,10 +36,12 @@ pokemonRouterV2.get("/", async (request: Request, response: Response) => {
         const page = Number(request.query.page) || 1;
         const pageSize = Number(request.query.pageSize) || 150;
         const sort = request.query.sort as string | undefined;
-        const limit = request.query.limit as string | undefined;
-        const offset = request.query.offset as string | undefined;
-        const pokemons = await PokemonService.ListOfPokemonsPaginated(sort, page, pageSize, offset, limit);
-        if (pokemons.length > 0) {
+        const limit = Number(request.query.limit) || undefined;
+        const offset = Number(request.query.offset) || undefined;
+        const baseUrl = `${request.protocol}://${request.get('host')}${request.originalUrl.split('?')[0]}`;
+        const pokemons = await PokemonService.ListOfPokemonsPaginated(sort, page, pageSize, offset, limit, baseUrl);
+        
+        if(pokemons.data.length > 0){
             return response.status(200).json(pokemons);
         }
         return response.status(404).json("No pokemons found");

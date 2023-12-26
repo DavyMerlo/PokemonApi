@@ -28,3 +28,16 @@ teamRouterV1.get("/:id", async(request: Request, response: Response) => {
         return response.status(500).json(error.message);
     }
 });
+
+teamRouterV1.post("/", async(request: Request, response: Response) => {
+    try{
+        const {name} = request.body;
+
+        const newTeam = await TeamService.addNewTeam(name);
+
+        response.status(201).json(newTeam);
+        
+    }catch(error : any){
+        return response.status(500).json(error.message);
+    }
+});

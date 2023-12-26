@@ -1,21 +1,21 @@
-import { PokemonTeam } from '../components/PokemonTeam';
 import { Team } from '../components/Team';
 import {db} from '../utils/db.server';
 
-export const getTeamsFromDB = async (): Promise<PokemonTeam[]> => {
+export const getTeamsFromDB = async (): Promise<Team[]> => {
     try {
-        const allTeamsFromDB: any[] = await db.pokemonTeam.findMany({
-            include: {
-                team: {
-                    select: {
-                        id: true,
-                        name: true
+        const TeamsFromDB: any = await db.team.findMany({
+            select: {
+                id: true,
+                name: true,
+                pokemons: {
+                    include: {
+                        pokemon: true
                     }
-                },
-                pokemon: true
-            },
-        });
-        return allTeamsFromDB;
+                }
+            }
+        })
+        return TeamsFromDB;
+        
     } catch (error) {
         throw new Error('Failed to fetch teams');
     }
@@ -30,6 +30,7 @@ export const getTeambyIdFromDB = async (teamId: number): Promise<Team | null> =>
             },
             select: {
                 id: true,
+                name: true,
                 pokemons: {
                     include: {
                         pokemon: true
@@ -43,3 +44,20 @@ export const getTeambyIdFromDB = async (teamId: number): Promise<Team | null> =>
         throw new Error('Failed to fetch team');
     }
 }
+
+export const addTeamToDb = async (name: string): Promise<Team> => {
+    try {
+        const newTeam = await db.team.create({
+            data: {
+                name: name,
+                pokemons: {
+                    create: [],
+                },
+            },
+        });
+
+        return newTeam;
+    } catch (error) {
+        throw new Error('Failed to add team to the database');
+    }
+};

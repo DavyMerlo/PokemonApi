@@ -2,9 +2,9 @@ import {db} from '../utils/db.server';
 import { PokemonDetailResponse } from '../components/PokemonDetail';
 import Pokemon from '../components/Pokemon';
 import SortingOptions from '../enums/SortingOptions';
-import { off } from 'process';
 
-export const getPokemonsFromDB = async (sortParam: string | undefined): Promise<Pokemon[]> => {
+export const getPokemonsFromDB = async (
+    sortParam: string | undefined): Promise<Pokemon[]> => {
     try {
         const orderByOptions: Record<string, any> = {
             [SortingOptions.NAME_ASC]: { name: 'asc' },
@@ -61,7 +61,9 @@ export const getPokemonFromDBbyId = async (pokemonId: number): Promise<PokemonDe
     }
 };
 
-export const searchPokemonsFromDB = async (query: string, limit: string | undefined): Promise<Pokemon[]> => {
+export const searchPokemonsFromDB = async (
+    query: string, 
+    limit: string | undefined): Promise<Pokemon[]> => {
     try {
         const searchQuery: any = query ? {
             OR: [
@@ -84,9 +86,12 @@ export const searchPokemonsFromDB = async (query: string, limit: string | undefi
     }
 };
 
-export const getPokemonsFromDBPaginated = async (sortParam: string | undefined, 
-    page: number, pageSize: number, 
-    offset: string | undefined, limit: string | undefined): Promise<Pokemon[]> => {
+export const getPokemonsFromDBPaginated = async (
+    sortParam: string | undefined, 
+    page: number, 
+    pageSize: number, 
+    offset: number | undefined,
+    limit: number | undefined): Promise<Pokemon[]> => {
     try {
         const orderByOptions: Record<string, any> = {
             [SortingOptions.NAME_ASC]: { name: 'asc' },
@@ -99,14 +104,11 @@ export const getPokemonsFromDBPaginated = async (sortParam: string | undefined,
             sortParam = SortingOptions.ID_ASC;
         }
 
-        const parsedLimit: number | undefined = limit ? parseInt(limit, 10) : undefined;
-        const parsedOffset: number | undefined = offset ? parseInt(offset, 10) : undefined;
-
-        const skip = (page - 1) * pageSize + (parsedOffset ?? 0);
+        const skip = (page - 1) * pageSize + (offset ?? 0);
         let take = pageSize;
 
-        if (parsedLimit && parsedLimit < pageSize) {
-            take = parsedLimit;
+        if (limit && limit < pageSize) {
+            take = limit;
         }
 
         const allPokemonsFromDB: any[] = await db.pokemonDetails.findMany({
