@@ -77,14 +77,14 @@ async function createPokemon(name: string, pokemonData: any) : Promise<any> {
   const sprites = pokemonData.sprites;
 
   spritesData = {
-    front_default: sprites.front_default || null,
-    front_female: sprites.front_female || null,
-    front_shiny: sprites.front_shiny || null,
-    front_shiny_female: sprites.front_shiny_female || null,
-    back_default: sprites.back_default || null,
-    back_female: sprites.back_female || null,
-    back_shiny: sprites.back_shiny || null,
-    back_shiny_female: sprites.back_shiny_female || null,
+    frontDefault: sprites.front_default || null,
+    frontFemale: sprites.front_female || null,
+    frontShiny: sprites.front_shiny || null,
+    frontShinyFemale: sprites.front_shiny_female || null,
+    backDefault: sprites.back_default || null,
+    backFemale: sprites.back_female || null,
+    backShiny: sprites.back_shiny || null,
+    backShinyFemale: sprites.back_shiny_female || null,
   };
 
     const createdPokemon = await db.pokemon.create({

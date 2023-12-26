@@ -154,14 +154,14 @@ const mapTypes = (types: any[]): Type[] => {
 
 const mapSprites = (sprite: any): SpriteResponse => {
     const spriteResponse: SpriteResponse = {
-        front_default: sprite.front_default,
-        front_female: sprite.front_shiny_female,
-        front_shiny: sprite.front_shiny,
-        front_shiny_female: sprite.front_shiny_female,
-        back_default: sprite.back_default,
-        back_female: sprite.back_female,
-        back_shiny: sprite.back_shiny,
-        back_shiny_female: sprite.back_shiny_female,
+        front_default: sprite.frontDefault,
+        front_female: sprite.frontShinyFemale,
+        front_shiny: sprite.frontShiny,
+        front_shiny_female: sprite.frontShinyFemale,
+        back_default: sprite.backDefault,
+        back_female: sprite.backFemale,
+        back_shiny: sprite.backShiny,
+        back_shiny_female: sprite.backShinyFemale,
     };
     return spriteResponse;
 };

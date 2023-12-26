@@ -34,17 +34,17 @@ model PokemonDetails {
 }
 
 model Sprite {
-  id                 Int             @id @default(autoincrement())
-  front_default      String?
-  front_female       String?
-  front_shiny        String?
-  front_shiny_female String?
-  back_default       String?
-  back_female        String?
-  back_shiny         String?
-  back_shiny_female  String?
-  pokemonDetail      PokemonDetails? @relation(fields: [pokemonDetailsId], references: [id])
-  pokemonDetailsId   Int?            @unique
+  id               Int             @id @default(autoincrement())
+  frontDefault     String?
+  frontFemale      String?
+  frontShiny       String?
+  frontShinyFemale String?
+  backDefault      String?
+  backFemale       String?
+  backShiny        String?
+  backShinyFemale  String?
+  pokemonDetail    PokemonDetails? @relation(fields: [pokemonDetailsId], references: [id])
+  pokemonDetailsId Int?            @unique
 }
 
 model Type {
