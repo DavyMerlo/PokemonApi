@@ -1,4 +1,4 @@
-import { Team } from '../components/Team';
+import Team from '../components/Team';
 import { getTeamsFromDB, getTeambyIdFromDB, addTeamToDb, checkTeamExistsInDB } from '../repositories/team.repository';
 
 export async function listOfTeams(): Promise<Team[]> {

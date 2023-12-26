@@ -1,11 +1,13 @@
-import { Pokemon } from '@prisma/client';
-import { Team } from './Team';
+import Pokemon from './Pokemon';
+import Team from './Team';
 
-export type PokemonTeam = {
+type PokemonTeam = {
     id: number;
     pokemon: Pokemon;
     pokemonId: number;
     team: Team;
     teamId: number;
 };
+
+export default PokemonTeam;
 

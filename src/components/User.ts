@@ -1,8 +1,8 @@
-import { Team } from './Team';
-import { TeamUser } from './TeamUser';
+import Team from './Team';
+import TeamUser from './TeamUser';
 
 
-export type User = {
+type User = {
     name: string;
     email: string;
     password: string;
@@ -11,3 +11,5 @@ export type User = {
     teams: Team[];
     teamMemberships: TeamUser[];
 };
+
+export default User;

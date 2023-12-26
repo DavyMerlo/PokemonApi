@@ -1,9 +1,9 @@
-import { AbilityResponse } from '../components/Ability';
-import { StatResponse } from '../components/Stat';
-import { VersionGroupDetailReponse } from '../components/VersionGroupDetail';
-import { MoveResponse } from '../components/Move';
-import { SpriteResponse } from '../components/Sprite';
-import { PokemonDetailResponse } from '../components/PokemonDetail';
+import Ability from '../components/Ability';
+import Stat from '../components/Stat';
+import VersionGroupDetail from '../components/VersionGroupDetail';
+import Move from '../components/Move';
+import Sprite from '../components/Sprite';
+import PokemonDetail from '../components/PokemonDetail';
 import Pokemon from '../components/Pokemon';
 import Type from '../components/Type';
 import {getPokemonFromDBbyId, getPokemonsFromDB, getPokemonsFromDBPaginated, searchPokemonsFromDB} from '../repositories/pokemon.repository';
@@ -72,13 +72,13 @@ export async function pokemonById(
     try {
         const pokemonFromDB = await getPokemonFromDBbyId(pokemonById);
 
-        const abilities: AbilityResponse[] = mapAbilities(pokemonFromDB?.abilities || []);
-        const stats: StatResponse[] = mapStats(pokemonFromDB?.stats || []);
-        const moves: MoveResponse[] = mapMoves(pokemonFromDB?.moves || []);
+        const abilities: Ability[] = mapAbilities(pokemonFromDB?.abilities || []);
+        const stats: Stat[] = mapStats(pokemonFromDB?.stats || []);
+        const moves: Move[] = mapMoves(pokemonFromDB?.moves || []);
         const types: Type[] = mapTypes(pokemonFromDB?.types || []);
-        const sprite: SpriteResponse = mapSprites(pokemonFromDB?.sprite || []);
+        const sprite: Sprite = mapSprites(pokemonFromDB?.sprite || []);
 
-        const pokemonDetails: PokemonDetailResponse = {
+        const pokemonDetails: PokemonDetail = {
             id: pokemonFromDB?.id || 0,
             name: pokemonFromDB?.name || '',
             height: pokemonFromDB?.height || 0,
@@ -129,7 +129,7 @@ const mapPokemon = (pokemon: any): Pokemon => {
     };
 };
 
-const mapAbilities = (abilities: any[]): AbilityResponse[] => {
+const mapAbilities = (abilities: any[]): Ability[] => {
     return abilities.map((ability: any) => ({
         ability: ability.abilityName,
         is_hidden: ability.isHidden,
@@ -137,7 +137,7 @@ const mapAbilities = (abilities: any[]): AbilityResponse[] => {
     }));
 };
 
-const mapStats = (stats: any[]): StatResponse[] => {
+const mapStats = (stats: any[]): Stat[] => {
     return stats.map((stat: any) => ({
         stat: stat.statName,
         base_stat: stat.baseStat,
@@ -145,14 +145,14 @@ const mapStats = (stats: any[]): StatResponse[] => {
     }));
 };
 
-const mapMoves = (moves: any[]): MoveResponse[] => {
+const mapMoves = (moves: any[]): Move[] => {
     return moves.map((move: any) => ({
         move: move.move,
         version_group_details: mapVersionGroupDetails(move.versionGroupDetails),
     }));
 };
 
-const mapVersionGroupDetails = (details: any[] | undefined): VersionGroupDetailReponse[] => {
+const mapVersionGroupDetails = (details: any[] | undefined): VersionGroupDetail[] => {
     if (!details || details.length === 0) {
         return [];
     }
@@ -171,8 +171,8 @@ const mapTypes = (types: any[]): Type[] => {
     }));
 };
 
-const mapSprites = (sprite: any): SpriteResponse => {
-    const spriteResponse: SpriteResponse = {
+const mapSprites = (sprite: any): Sprite => {
+    const mappedSprite: Sprite = {
         front_default: sprite.frontDefault,
         front_female: sprite.frontShinyFemale,
         front_shiny: sprite.frontShiny,
@@ -182,5 +182,5 @@ const mapSprites = (sprite: any): SpriteResponse => {
         back_shiny: sprite.backShiny,
         back_shiny_female: sprite.backShinyFemale,
     };
-    return spriteResponse;
+    return mappedSprite;
 };

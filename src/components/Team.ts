@@ -1,9 +1,11 @@
-import { PokemonTeam } from './PokemonTeam';
-import { User } from './User';
-import { TeamUser } from './TeamUser';
+import PokemonTeam from './PokemonTeam';
+import User from './User';
+import TeamUser from './TeamUser';
 
-export type Team = {
+type Team = {
     id: number;
     name: string;
     pokemons?: number[];
-  };
+};
+
+export default Team;

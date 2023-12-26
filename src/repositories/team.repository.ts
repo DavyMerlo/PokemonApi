@@ -1,4 +1,4 @@
-import { Team } from '../components/Team';
+import Team from '../components/Team';
 import {db} from '../utils/db.server';
 
 export const getTeamsFromDB = async (): Promise<Team[]> => {

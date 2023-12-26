@@ -1,6 +1,8 @@
-import { VersionGroupDetailReponse } from './VersionGroupDetail';
+import VersionGroupDetailReponse from './VersionGroupDetail';
 
-export type MoveResponse = {
+type Move = {
     move: string;
     version_group_details: VersionGroupDetailReponse[];
 };
+
+export default Move;

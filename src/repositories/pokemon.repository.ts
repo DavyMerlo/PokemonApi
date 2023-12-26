@@ -1,5 +1,5 @@
 import {db} from '../utils/db.server';
-import { PokemonDetailResponse } from '../components/PokemonDetail';
+import PokemonDetail from '../components/PokemonDetail';
 import Pokemon from '../components/Pokemon';
 import SortingOptions from '../enums/SortingOptions';
 
@@ -30,7 +30,7 @@ export const getPokemonsFromDB = async (
 };
 
 
-export const getPokemonFromDBbyId = async (pokemonId: number): Promise<PokemonDetailResponse | null> => {
+export const getPokemonFromDBbyId = async (pokemonId: number): Promise<PokemonDetail | null> => {
     try {
         const pokemonFromDB: any = await db.pokemonDetails.findUnique({
             where: {
