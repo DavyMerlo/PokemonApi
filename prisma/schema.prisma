@@ -12,7 +12,7 @@ datasource db {
 
 model Pokemon {
   id        Int            @id @default(autoincrement())
-  name      String
+  name      String         @unique
   details   PokemonDetails @relation(fields: [detailsId], references: [id])
   detailsId Int
   teams     PokemonTeam[]
@@ -20,7 +20,7 @@ model Pokemon {
 
 model PokemonDetails {
   id        Int       @id @default(autoincrement())
-  name      String
+  name      String    @unique
   height    Float
   weight    Float
   stats     Stat[]

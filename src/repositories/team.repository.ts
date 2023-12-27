@@ -62,7 +62,7 @@ export const addTeamToDb = async (name: string): Promise<Team> => {
     }
 };
 
-export const checkTeamExistsInDB = async (teamId: number): Promise<boolean> => {
+export const teamExistsInDB = async (teamId: number): Promise<boolean> => {
     try {
         const team = await db.team.findUnique({
             where: {

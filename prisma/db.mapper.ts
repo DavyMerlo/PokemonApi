@@ -74,6 +74,8 @@ async function mapPokemonToDB(name: string, pokemonData: any): Promise<any> {
         },
       },
     });
+
+    console.log(`Inserted data for Pokemon with Id: ${createdPokemon.id} and Name: ${createdPokemon.name}`);
     return createdPokemon;
   }
 

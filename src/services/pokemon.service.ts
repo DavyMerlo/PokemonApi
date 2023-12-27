@@ -6,7 +6,6 @@ import PokemonDetail from '../components/PokemonDetail';
 import Pokemon from '../components/Pokemon';
 import Type from '../components/Type';
 import * as PokemonRepository from '../repositories/pokemon.repository';
-import SortingOptions from '../enums/SortingOptions';
 import * as mappingservice from '../helpers/mappers';
 import CustomError from '../components/CustomError';
 
@@ -14,21 +13,7 @@ import CustomError from '../components/CustomError';
 export async function listOfPokemons(
     sortParam: string | undefined) {
         const pokemonsFromDB = await PokemonRepository.getPokemonsFromDB(sortParam);
-        let mappedPokemons: Pokemon[] = pokemonsFromDB.map(mappingservice.mapPokemon);
-        if (sortParam) {
-            if (sortParam === SortingOptions.NAME_DESC) {
-                mappedPokemons.sort((a, b) => {
-                    const comparison = a.name.localeCompare(b.name);
-                    return SortingOptions.NAME_DESC ? -comparison : comparison;
-                });
-            }
-            if (sortParam === SortingOptions.ID_DESC) {
-                mappedPokemons.sort((a, b) => {
-                    return SortingOptions.ID_DESC ? b.id - a.id : a.id - b.id;
-                });
-            }
-        }
-        return mappedPokemons;
+        return pokemonsFromDB.map(mappingservice.mapPokemon);
 }
 
 export async function ListOfPokemonsPaginated(
@@ -38,7 +23,7 @@ export async function ListOfPokemonsPaginated(
     offset: number | undefined, 
     limit: number | undefined,
     baseUrl: string) {
-        const pokemonFromDB = await PokemonRepository.getPokemonsFromDBPaginated(
+        const pokemonFromDB = await PokemonRepository.getPokemonsPaginatedFromDB(
             sort, page, pageSize, offset, limit);
 
         let mappedPokemon: Pokemon[] = pokemonFromDB.map(mappingservice.mapPokemon);
@@ -59,11 +44,11 @@ export async function ListOfPokemonsPaginated(
 
 export async function pokemonById(
     pokemonId: number) {
-        const pokemonExists = await PokemonRepository.checkPokemonExistsInDB(pokemonId);
+        const pokemonExists = await PokemonRepository.pokemonExistsInDB(pokemonId);
         if (!pokemonExists) {
             throw new CustomError(404, 'Pokemon not found', 'Pokemon with ' + pokemonId + ' does not exist');
         }
-        const pokemonFromDB = await PokemonRepository.getPokemonFromDBbyId(pokemonId);
+        const pokemonFromDB = await PokemonRepository.getPokemonByIdFromDB(pokemonId);
         const abilities: Ability[] = mappingservice.mapAbilities(pokemonFromDB?.abilities || []);
         const stats: Stat[] = mappingservice.mapStats(pokemonFromDB?.stats || []);
         const moves: Move[] = mappingservice.mapMoves(pokemonFromDB?.moves || []);
@@ -90,11 +75,9 @@ export async function searchPokemons(
     query: string, 
     limit: string | undefined) {
         const pokemonsFromDB = await PokemonRepository.searchPokemonsFromDB(query, limit);
-        let mappedPokemons: Pokemon[] = pokemonsFromDB.map(mappingservice.mapPokemon);
-        return mappedPokemons;
+        return pokemonsFromDB.map(mappingservice.mapPokemon);
 }
 
 export async function checkPokemonExists(pokemonId: number) {
-    const pokemonExists = await PokemonRepository.checkPokemonExistsInDB(pokemonId);
-    return pokemonExists;
+    return await PokemonRepository.pokemonExistsInDB(pokemonId);
 }

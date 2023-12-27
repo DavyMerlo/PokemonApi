@@ -19,7 +19,7 @@ export const addPokemonTeamToDb = async (teamId: number, pokemonIds: number[]) =
     };
 };
 
-export async function pokemonCountInTeamDB(teamId: number): Promise<number> {
+export async function pokemonCountInTeamFromDB(teamId: number): Promise<number> {
     try {
         const pokemonCount = await db.pokemonTeam.count({
             where: {

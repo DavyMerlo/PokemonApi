@@ -2,7 +2,6 @@ import express from 'express';
 import type { Request, Response } from 'express';
 import * as TeamService from '../services/team.service';
 import * as PokemonTeamService  from '../services/pokemonteam.service';
-import * as PokemonService  from '../services/pokemon.service';
 import CustomError from '../components/CustomError';
 export const teamRouterV1 = express.Router();
 
@@ -214,7 +213,7 @@ teamRouterV1.get("/:id", async(request: Request, response: Response) => {
 teamRouterV1.post("/", async(request: Request, response: Response) => {
     try{
         const {name} = request.body;
-        const newTeam = await TeamService.addNewTeam(name);
+        const newTeam = await TeamService.addTeam(name);
         response.status(201).json(newTeam);
 
     }catch(error : any){
@@ -288,7 +287,7 @@ teamRouterV1.post("/:id", async (request: Request, response: Response) => {
     try {
         const teamId = parseInt(request.params.id);
         const { pokemons } = request.body;
-        const createdPokemonTeam = await PokemonTeamService.addPokemons(teamId, pokemons);
+        const createdPokemonTeam = await PokemonTeamService.addPokemonsToTeam(teamId, pokemons);
         response.json(createdPokemonTeam);
     } catch (error) {
         if (error instanceof CustomError) {

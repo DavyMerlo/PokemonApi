@@ -8,31 +8,25 @@ export async function listOfTeams(): Promise<Team[]> {
         const mappedTeamsPromises: Promise<Team>[] = listOfTeams.map(async (team: Team) => {
             return await mappingservice.mapTeam(team);
         });
-        const mappedTeams: Team[] = await Promise.all(mappedTeamsPromises);
-        return mappedTeams;
+        return await Promise.all(mappedTeamsPromises);
 }
 
 export async function teamById(teamId: number): Promise<Team> {
-    const teamExists = await TeamRepository.checkTeamExistsInDB(teamId);
+    const teamExists = await TeamRepository.teamExistsInDB(teamId);
     if (!teamExists) {
         throw new CustomError(404, 'Team not found', 'Team with ' + teamId + ' does not exist');
     }
     const team = await TeamRepository.getTeambyIdFromDB(teamId);
-        if (team === null) {
-            throw new Error('Team not found');
-        }
-        return mappingservice.mapTeam(team);
+    return mappingservice.mapTeam(team);
 }
 
-export async function addNewTeam(name: string): Promise<Team> {
-    const newTeam = await TeamRepository.addTeamToDb(name);
-    return newTeam;
+export async function addTeam(name: string): Promise<Team> {
+    return await TeamRepository.addTeamToDb(name);
 }
 
 export async function checkTeamExists(teamId: number) {
     try{
-        const teamExists = await TeamRepository.checkTeamExistsInDB(teamId);
-        return teamExists;
+        return await TeamRepository.teamExistsInDB(teamId);
     }
     catch(error){
         throw new Error('Failed to check');

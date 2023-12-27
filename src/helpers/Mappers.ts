@@ -79,7 +79,7 @@ export const mapSprites = (sprite: any): Sprite => {
     return mappedSprite;
 };
 
-export async function mapTeam(team: Team): Promise<Team> {
+export async function mapTeam(team: Team | null): Promise<Team> {
     const pokemons: number[] = team?.pokemons ? team.pokemons.map((pokemon: any) => pokemon.pokemonId) : [];
     return {
         id: team?.id || 0,

@@ -65,7 +65,7 @@ async function createTeamUserAndAssociatePokemon(teamName: string, pokemonIds: n
     await createPokemonTeam(teamId, pokemonIds);
     console.log(`Pokemons associated with the team ${teamName} successfully`);
     const userId =  await createUser();
-    createTeamUser(teamId,userId);
+    await createTeamUser(teamId,userId);
   } catch (error) {
     console.error('Error creating team and associating Pokemons:', error);
   }
@@ -75,8 +75,7 @@ const seedDatabase = async (): Promise<void> => {
   try {
       const pokemonData = await readPokemonJson();
       for (const pokemon of pokemonData) {
-          const created = await mapPokemonToDB(pokemon.name, pokemon);
-          console.log(`Inserted data for Pokemon with ID: ${created.id}`);
+        await mapPokemonToDB(pokemon.name, pokemon);
       }
       const pokemonIds = [1, 2, 3];
       await createTeamUserAndAssociatePokemon('Fire Flames', pokemonIds);

@@ -1,20 +1,20 @@
 import {db} from '../utils/db.server';
 import PokemonDetail from '../components/PokemonDetail';
 import Pokemon from '../components/Pokemon';
-import SortingOptions from '../enums/SortingOptions';
+import SortingOption from '../enums/SortingOption';
 
 export const getPokemonsFromDB = async (
     sortParam: string | undefined): Promise<Pokemon[]> => {
     try {
         const orderByOptions: Record<string, any> = {
-            [SortingOptions.NAME_ASC]: { name: 'asc' },
-            [SortingOptions.NAME_DESC]: { name: 'desc' },
-            [SortingOptions.ID_ASC]: { id: 'asc' },
-            [SortingOptions.ID_DESC]: { id: 'desc' },
+            [SortingOption.NAME_ASC]: { name: 'asc' },
+            [SortingOption.NAME_DESC]: { name: 'desc' },
+            [SortingOption.ID_ASC]: { id: 'asc' },
+            [SortingOption.ID_DESC]: { id: 'desc' },
         };
 
         if (!sortParam) {
-            sortParam = SortingOptions.ID_ASC;
+            sortParam = SortingOption.ID_ASC;
         }
 
         const allPokemonsFromDB: any[] = await db.pokemonDetails.findMany({
@@ -30,7 +30,7 @@ export const getPokemonsFromDB = async (
 };
 
 
-export const getPokemonFromDBbyId = async (pokemonId: number): Promise<PokemonDetail | null> => {
+export const getPokemonByIdFromDB = async (pokemonId: number): Promise<PokemonDetail | null> => {
     try {
         const pokemonFromDB: any = await db.pokemonDetails.findUnique({
             where: {
@@ -85,7 +85,7 @@ export const searchPokemonsFromDB = async (
     }
 };
 
-export const getPokemonsFromDBPaginated = async (
+export const getPokemonsPaginatedFromDB = async (
     sortParam: string | undefined, 
     page: number, 
     pageSize: number, 
@@ -93,14 +93,14 @@ export const getPokemonsFromDBPaginated = async (
     limit: number | undefined): Promise<Pokemon[]> => {
     try {
         const orderByOptions: Record<string, any> = {
-            [SortingOptions.NAME_ASC]: { name: 'asc' },
-            [SortingOptions.NAME_DESC]: { name: 'desc' },
-            [SortingOptions.ID_ASC]: { id: 'asc' },
-            [SortingOptions.ID_DESC]: { id: 'desc' },
+            [SortingOption.NAME_ASC]: { name: 'asc' },
+            [SortingOption.NAME_DESC]: { name: 'desc' },
+            [SortingOption.ID_ASC]: { id: 'asc' },
+            [SortingOption.ID_DESC]: { id: 'desc' },
         };
 
         if (!sortParam) {
-            sortParam = SortingOptions.ID_ASC;
+            sortParam = SortingOption.ID_ASC;
         }
 
         const skip = (page - 1) * pageSize + (offset ?? 0);
@@ -126,7 +126,7 @@ export const getPokemonsFromDBPaginated = async (
 };
 
 
-export const checkPokemonExistsInDB = async (pokemonId: number): Promise<boolean> => {
+export const pokemonExistsInDB = async (pokemonId: number): Promise<boolean> => {
     try {
         const team = await db.pokemon.findUnique({
             where: {
