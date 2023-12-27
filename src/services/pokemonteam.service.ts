@@ -1,23 +1,18 @@
-import ErrorResponse from '../components/Error';
+import CustomError from '../components/CustomError';
 import * as PokemonRepository from '../repositories/pokemonteam.repostiory';
 import * as TeamService from '../services/team.service';
-import * as Handler from '../helpers/ErrorGenerator';
 
-export async function addPokemons(teamId: number, pokemons: any[]): Promise<{ status: number, data: any | ErrorResponse }> {
+export async function addPokemons(teamId: number, pokemons: any[]): Promise<{ status: number, data: any | CustomError }> {
     const teamExists = await TeamService.checkTeamExists(teamId);
     if (!teamExists) {
-        return Handler.handleErrorResponse(404, "Team not found", "The team does not exist.");
-        }
-        const pokemonCount = await PokemonRepository.pokemonCountInTeamDB(teamId);
-        const maxAllowedPokemons = 6;
-        if (!Array.isArray(pokemons) || pokemons.length + pokemonCount > maxAllowedPokemons) {
-            return Handler.handleErrorResponse(
-                400,
-                "Invalid request",
-                "Exceeded the maximum allowed number of pokemons in the team."
-            );
-        }
-        await PokemonRepository.addPokemonTeamToDb(teamId, pokemons);
-        const team = await TeamService.teamById(teamId);
-        return { status: 200, data: team };
+        throw new CustomError(404, 'Team not found', 'Team with ' + teamId + ' does not exist');
+    }
+    const pokemonCount = await PokemonRepository.pokemonCountInTeamDB(teamId);
+    const maxAllowedPokemons = 6;
+    if (!Array.isArray(pokemons) || pokemons.length + pokemonCount > maxAllowedPokemons){
+        throw new CustomError(400, 'Bad Request', "Exceeded the maximum allowed number of pokemons in this team");
+    }
+    await PokemonRepository.addPokemonTeamToDb(teamId, pokemons);
+    const team = await TeamService.teamById(teamId);
+    return { status: 200, data: team };
 };

@@ -3,6 +3,7 @@ import type { Request, Response } from 'express';
 import * as TeamService from '../services/team.service';
 import * as PokemonTeamService  from '../services/pokemonteam.service';
 import * as PokemonService  from '../services/pokemon.service';
+import CustomError from '../components/CustomError';
 export const teamRouterV1 = express.Router();
 
 /**
@@ -133,16 +134,20 @@ teamRouterV1.get("/", async(request: Request, response: Response) => {
 teamRouterV1.get("/:id", async(request: Request, response: Response) => {
     const teamId: number = parseInt(request.params.id, 10);
     try{
-        const teamExists = await TeamService.checkTeamExists(teamId);
-        if (!teamExists) {
-            return generateErrorResponse(response, 404, "Team not found");
-        }
         const team = await TeamService.teamById(teamId);
-        if(team){
-            return response.status(200).json(team);
+        response.json(team);
+    }catch (error) {
+        if (error instanceof CustomError) {
+          response.status(error.statusCode).json({
+            error: error.error,
+            error_message: error.error_message,
+          });
+        } else {
+          response.status(500).json({
+            error: 'InternalServerError',
+            error_message: 'Internal Server Error',
+          });
         }
-    }catch(error : any){
-        return response.status(500).json(error.message);
     }
 });
 
@@ -283,13 +288,19 @@ teamRouterV1.post("/:id", async (request: Request, response: Response) => {
     try {
         const teamId = parseInt(request.params.id);
         const { pokemons } = request.body;
-        const result = await PokemonTeamService.addPokemons(teamId, pokemons);
-        return response.status(result.status).json(result.data);
-    } catch (error: any) {
-        return response.status(500).json(error.message);
+        const createdPokemonTeam = await PokemonTeamService.addPokemons(teamId, pokemons);
+        response.json(createdPokemonTeam);
+    } catch (error) {
+        if (error instanceof CustomError) {
+          response.status(error.statusCode).json({
+            error: error.error,
+            error_message: error.error_message,
+          });
+        } else {
+          response.status(500).json({
+            error: 'InternalServerError',
+            error_message: 'Internal Server Error',
+          });
+        }
     }
 });
-
-function generateErrorResponse(response: Response, statusCode: number, errorMessage: string): void {
-    response.status(statusCode).json({ error: { message: errorMessage, code: statusCode } });
-};

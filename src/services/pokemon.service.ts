@@ -7,8 +7,8 @@ import Pokemon from '../components/Pokemon';
 import Type from '../components/Type';
 import * as PokemonRepository from '../repositories/pokemon.repository';
 import SortingOptions from '../enums/SortingOptions';
-import * as mappingservice from '../helpers/Mappers';
-import * as Handler from '../helpers/ErrorGenerator';
+import * as mappingservice from '../helpers/mappers';
+import CustomError from '../components/CustomError';
 
 
 export async function listOfPokemons(
@@ -58,8 +58,12 @@ export async function ListOfPokemonsPaginated(
 
 
 export async function pokemonById(
-    pokemonById: number) {
-        const pokemonFromDB = await PokemonRepository.getPokemonFromDBbyId(pokemonById);
+    pokemonId: number) {
+        const pokemonExists = await PokemonRepository.checkPokemonExistsInDB(pokemonId);
+        if (!pokemonExists) {
+            throw new CustomError(404, 'Pokemon not found', 'Pokemon with ' + pokemonId + ' does not exist');
+        }
+        const pokemonFromDB = await PokemonRepository.getPokemonFromDBbyId(pokemonId);
         const abilities: Ability[] = mappingservice.mapAbilities(pokemonFromDB?.abilities || []);
         const stats: Stat[] = mappingservice.mapStats(pokemonFromDB?.stats || []);
         const moves: Move[] = mappingservice.mapMoves(pokemonFromDB?.moves || []);

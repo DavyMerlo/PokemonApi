@@ -9,7 +9,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/index.ts",
-    "prisma:import": "nodemon --exec ts-node prisma/import.ts"
+    "import": "node prisma/import.ts"
+    
   },
   "keywords": [],
   "author": "",

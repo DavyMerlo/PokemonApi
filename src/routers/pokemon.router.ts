@@ -1,6 +1,7 @@
 import express from 'express';
 import type { Request, Response } from 'express';
 import * as PokemonService from '../services/pokemon.service';
+import CustomError from '../components/CustomError';
 export const pokemonRouterV1 = express.Router();
 export const pokemonRouterV2 = express.Router();
 
@@ -182,18 +183,21 @@ pokemonRouterV1.get("/", async (request: Request, response: Response) => {
  */
 pokemonRouterV1.get("/:id", async(request: Request, response: Response) => {
     const pokemonId: number = parseInt(request.params.id, 10);
-    try{
-        const pokemonExists = await PokemonService.checkPokemonExists(pokemonId);
-        if (!pokemonExists) {
-            return generateErrorResponse(response, 404, "Pokemon not found");
+    try {
+        const pokemonDetails = await PokemonService.pokemonById(pokemonId);
+        response.json(pokemonDetails);
+      } catch (error) {
+        if (error instanceof CustomError) {
+          response.status(error.statusCode).json({
+            error: error.error,
+            error_message: error.error_message,
+          });
+        } else {
+          response.status(500).json({
+            error: 'InternalServerError',
+            error_message: 'Internal Server Error',
+          });
         }
-        const pokemon = await PokemonService.pokemonById(pokemonId);
-        if(pokemon){
-            return response.status(200).json(pokemon);
-        }
-        return response.status(404).json("Pokemon could not be found");
-    }catch(error : any){
-        return response.status(500).json(error.message);
     }
 });
 
@@ -323,8 +327,3 @@ pokemonRouterV2.get("/", async (request: Request, response: Response) => {
         return response.status(500).json(error.message);
     }
 });
-
-function generateErrorResponse(response: Response, statusCode: number, errorMessage: string): void {
-    response.status(statusCode).json({ error: { message: errorMessage, code: statusCode } });
-}
-

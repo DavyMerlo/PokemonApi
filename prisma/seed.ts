@@ -27,7 +27,7 @@ async function createUser(): Promise<number> {
 }
 
 async function createTeamUser(teamId: number, userId: number): Promise<void> {
-  const teamUser = await db.teamUser.create({
+  await db.teamUser.create({
     data: {
       teamId: teamId,
       userId: userId

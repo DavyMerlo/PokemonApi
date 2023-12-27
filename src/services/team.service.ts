@@ -1,6 +1,7 @@
 import Team from '../components/Team';
 import * as TeamRepository from '../repositories/team.repository';
-import * as mappingservice from '../helpers/Mappers';
+import * as mappingservice from '../helpers/mappers';
+import CustomError from '../components/CustomError';
 
 export async function listOfTeams(): Promise<Team[]> {
     const listOfTeams: Team[] = await TeamRepository.getTeamsFromDB();
@@ -12,6 +13,10 @@ export async function listOfTeams(): Promise<Team[]> {
 }
 
 export async function teamById(teamId: number): Promise<Team> {
+    const teamExists = await TeamRepository.checkTeamExistsInDB(teamId);
+    if (!teamExists) {
+        throw new CustomError(404, 'Team not found', 'Team with ' + teamId + ' does not exist');
+    }
     const team = await TeamRepository.getTeambyIdFromDB(teamId);
         if (team === null) {
             throw new Error('Team not found');
