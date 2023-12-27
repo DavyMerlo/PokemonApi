@@ -124,3 +124,18 @@ export const getPokemonsFromDBPaginated = async (
         throw new Error('Failed to fetch paginated pokemons');
     }
 };
+
+
+export const checkPokemonExistsInDB = async (pokemonId: number): Promise<boolean> => {
+    try {
+        const team = await db.pokemon.findUnique({
+            where: {
+                id: pokemonId,
+            },
+        });
+
+        return !!team;
+    } catch (error) {
+        throw new Error('Failed to check');
+    }
+};

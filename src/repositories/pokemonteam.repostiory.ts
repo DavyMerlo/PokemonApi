@@ -18,3 +18,17 @@ export const addPokemonTeamToDb = async (teamId: number, pokemonIds: number[]) =
         throw new Error('Failed to add Pokemon teams to the database');
     };
 };
+
+export async function pokemonCountInTeamDB(teamId: number): Promise<number> {
+    try {
+        const pokemonCount = await db.pokemonTeam.count({
+            where: {
+                teamId: teamId,
+            },
+        });
+
+        return pokemonCount;
+    } catch (error) {
+        throw new Error('Failed to get Pokemon count for the team');
+    }
+}

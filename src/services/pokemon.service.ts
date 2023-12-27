@@ -6,14 +6,13 @@ import Sprite from '../components/Sprite';
 import PokemonDetail from '../components/PokemonDetail';
 import Pokemon from '../components/Pokemon';
 import Type from '../components/Type';
-import {getPokemonFromDBbyId, getPokemonsFromDB, getPokemonsFromDBPaginated, searchPokemonsFromDB} from '../repositories/pokemon.repository';
+import {getPokemonFromDBbyId, getPokemonsFromDB, getPokemonsFromDBPaginated, searchPokemonsFromDB , checkPokemonExistsInDB} from '../repositories/pokemon.repository';
 import SortingOptions from '../enums/SortingOptions';
 import ErrorResponse from '../components/Error';
 
 
 export async function listOfPokemons(
     sortParam: string | undefined) {
-    try {
         const pokemonsFromDB = await getPokemonsFromDB(sortParam);
         let mappedPokemons: Pokemon[] = pokemonsFromDB.map(mapPokemon);
         if (sortParam) {
@@ -30,14 +29,6 @@ export async function listOfPokemons(
             }
         }
         return mappedPokemons;
-
-    } catch (error) {
-        const errorResponse: ErrorResponse = {
-            error: 'Failed to fetch pokemons',
-            error_message: 'There was an issue fetching the Pokemon data.',
-        };
-        throw errorResponse;
-    }
 }
 
 export async function ListOfPokemonsPaginated(
@@ -47,36 +38,28 @@ export async function ListOfPokemonsPaginated(
     offset: number | undefined, 
     limit: number | undefined,
     baseUrl: string) {
-        try {
-            const pokemonFromDB = await getPokemonsFromDBPaginated(
-                sort, page, pageSize, offset, limit);
-            let mappedPokemon: Pokemon[] = pokemonFromDB.map(mapPokemon);
-    
-            const countPokemon = (await getPokemonsFromDB(undefined)).length;
-            const pages: number = Math.ceil(countPokemon / pageSize);
-    
-            const nextUrl = page < pages ? `${baseUrl}?page=${page + 1}&pageSize=${pageSize}` : null;
-            const previousUrl = page > 1 ? `${baseUrl}?page=${page - 1}&pageSize=${pageSize}` : null;
-            const metaData = {
-                total: countPokemon,
-                pages: pages,
-                page: page,
-                next: nextUrl,
-                previous: previousUrl,
-            };
-    
-            return { data: mappedPokemon, metadata: metaData };
-        } catch (error) {
-            throw new Error('Failed to fetch pokemons');
-        }
+        const pokemonFromDB = await getPokemonsFromDBPaginated(
+            sort, page, pageSize, offset, limit);
+
+        let mappedPokemon: Pokemon[] = pokemonFromDB.map(mapPokemon);
+        const countPokemon = (await getPokemonsFromDB(undefined)).length;
+        const pages: number = Math.ceil(countPokemon / pageSize);
+        const nextUrl = page < pages ? `${baseUrl}?page=${page + 1}&pageSize=${pageSize}` : null;
+        const previousUrl = page > 1 ? `${baseUrl}?page=${page - 1}&pageSize=${pageSize}` : null;
+        const metaData = {
+            total: countPokemon,
+            pages: pages,
+            page: page,
+            next: nextUrl,
+            previous: previousUrl,
+        };
+        return { data: mappedPokemon, metadata: metaData };
 }
 
 
 export async function pokemonById(
     pokemonById: number) {
-    try {
         const pokemonFromDB = await getPokemonFromDBbyId(pokemonById);
-
         const abilities: Ability[] = mapAbilities(pokemonFromDB?.abilities || []);
         const stats: Stat[] = mapStats(pokemonFromDB?.stats || []);
         const moves: Move[] = mapMoves(pokemonFromDB?.moves || []);
@@ -97,22 +80,19 @@ export async function pokemonById(
             types: types,
         };
         return pokemonDetails;
-    } catch (error) {
-        throw new Error('Failed to fetch pokemon');
-    }
 }
 
 export async function searchPokemons(
     query: string, 
     limit: string | undefined) {
-    try {
         const pokemonsFromDB = await searchPokemonsFromDB(query, limit);
         let mappedPokemons: Pokemon[] = pokemonsFromDB.map(mapPokemon);
         return mappedPokemons;
+}
 
-    } catch (error) {
-        throw new Error('Failed to fetch pokemons');
-    }
+export async function checkPokemonExists(pokemonId: number) {
+    const pokemonExists = await checkPokemonExistsInDB(pokemonId);
+    return pokemonExists;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,10 +168,3 @@ const mapSprites = (sprite: any): Sprite => {
     };
     return mappedSprite;
 };
-
-function generateErrorResponse(error: any): ErrorResponse {
-    return {
-        error: error.error ,
-        error_message: error.message || 'Unknown error occurred',
-    };
-}
