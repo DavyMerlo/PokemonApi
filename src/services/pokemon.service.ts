@@ -6,7 +6,7 @@ import PokemonDetail from '../components/PokemonDetail';
 import Pokemon from '../components/Pokemon';
 import Type from '../components/Type';
 import * as PokemonRepository from '../repositories/pokemon.repository';
-import * as mappingservice from '../helpers/mappers';
+import * as mappingservice from '../helpers/Mapper';
 import CustomError from '../components/CustomError';
 
 

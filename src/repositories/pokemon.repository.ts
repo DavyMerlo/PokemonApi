@@ -1,27 +1,17 @@
 import {db} from '../utils/db.server';
 import PokemonDetail from '../components/PokemonDetail';
 import Pokemon from '../components/Pokemon';
-import SortingOption from '../enums/SortingOption';
+import SortingOptionsGenerator from '../helpers/SortingOptionsGenerator';
 
 export const getPokemonsFromDB = async (
     sortParam: string | undefined): Promise<Pokemon[]> => {
     try {
-        const orderByOptions: Record<string, any> = {
-            [SortingOption.NAME_ASC]: { name: 'asc' },
-            [SortingOption.NAME_DESC]: { name: 'desc' },
-            [SortingOption.ID_ASC]: { id: 'asc' },
-            [SortingOption.ID_DESC]: { id: 'desc' },
-        };
-
-        if (!sortParam) {
-            sortParam = SortingOption.ID_ASC;
-        }
-
+        const orderBy = SortingOptionsGenerator(sortParam);
         const allPokemonsFromDB: any[] = await db.pokemonDetails.findMany({
             include: {
                 types: true,
             },
-            orderBy: orderByOptions[sortParam],
+            orderBy: orderBy,
         });
         return allPokemonsFromDB;
     } catch (error) {
@@ -70,7 +60,6 @@ export const searchPokemonsFromDB = async (
                 { types: { some: { name: { contains: query, mode: 'insensitive' } } } },
             ],
         } : {};
-
         const parsedLimit: number | undefined = limit ? parseInt(limit, 10) : undefined;
         const allPokemonsFromDB: any[] = await db.pokemonDetails.findMany({
             where: searchQuery,
@@ -92,20 +81,9 @@ export const getPokemonsPaginatedFromDB = async (
     offset: number | undefined,
     limit: number | undefined): Promise<Pokemon[]> => {
     try {
-        const orderByOptions: Record<string, any> = {
-            [SortingOption.NAME_ASC]: { name: 'asc' },
-            [SortingOption.NAME_DESC]: { name: 'desc' },
-            [SortingOption.ID_ASC]: { id: 'asc' },
-            [SortingOption.ID_DESC]: { id: 'desc' },
-        };
-
-        if (!sortParam) {
-            sortParam = SortingOption.ID_ASC;
-        }
-
+        const orderBy = SortingOptionsGenerator(sortParam);
         const skip = (page - 1) * pageSize + (offset ?? 0);
         let take = pageSize;
-
         if (limit && limit < pageSize) {
             take = limit;
         }
@@ -114,11 +92,10 @@ export const getPokemonsPaginatedFromDB = async (
             include: {
                 types: true,
             },
-            orderBy: orderByOptions[sortParam],
+            orderBy: orderBy,
             skip,
             take
         });
-
         return allPokemonsFromDB;
     } catch (error) {
         throw new Error('Failed to fetch paginated pokemons');
@@ -133,7 +110,6 @@ export const pokemonExistsInDB = async (pokemonId: number): Promise<boolean> => 
                 id: pokemonId,
             },
         });
-
         return !!team;
     } catch (error) {
         throw new Error('Failed to check');

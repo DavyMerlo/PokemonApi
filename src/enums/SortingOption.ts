@@ -1,4 +1,3 @@
-
 enum SortingOption {
     NAME_ASC = 'name-asc',
     NAME_DESC = 'name-desc',

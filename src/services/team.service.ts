@@ -1,6 +1,6 @@
 import Team from '../components/Team';
 import * as TeamRepository from '../repositories/team.repository';
-import * as mappingservice from '../helpers/mappers';
+import * as mappingservice from '../helpers/Mapper';
 import CustomError from '../components/CustomError';
 
 export async function listOfTeams(): Promise<Team[]> {
