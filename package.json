@@ -8,7 +8,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/index.ts"
+    "dev": "nodemon src/index.ts",
+    "prisma:import": "nodemon --exec ts-node prisma/import.ts"
   },
   "keywords": [],
   "author": "",
@@ -23,12 +24,12 @@
     "express": "^4.18.2",
     "express-openapi-validator": "^5.1.2",
     "express-validator": "^7.0.1",
+    "node-fetch": "^3.3.2",
     "openapi-typescript": "^6.7.3",
     "swagger-autogen": "^2.23.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui": "^5.10.5",
-    "swagger-ui-express": "^5.0.0",
-    "ts-node": "^10.9.2"
+    "swagger-ui-express": "^5.0.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
@@ -40,6 +41,7 @@
     "esbuild-register": "^3.5.0",
     "nodemon": "^3.0.2",
     "prisma": "^5.7.1",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
 }

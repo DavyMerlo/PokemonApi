@@ -7,8 +7,8 @@ import Pokemon from '../components/Pokemon';
 import Type from '../components/Type';
 import * as PokemonRepository from '../repositories/pokemon.repository';
 import SortingOptions from '../enums/SortingOptions';
-import * as mappingservice from '../helpers/mapping';
-import * as Handler from '../helpers/error.handler';
+import * as mappingservice from '../helpers/Mappers';
+import * as Handler from '../helpers/ErrorGenerator';
 
 
 export async function listOfPokemons(

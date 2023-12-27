@@ -1,6 +1,6 @@
 import Team from '../components/Team';
 import * as TeamRepository from '../repositories/team.repository';
-import * as mappingservice from '../helpers/mapping';
+import * as mappingservice from '../helpers/Mappers';
 
 export async function listOfTeams(): Promise<Team[]> {
     const listOfTeams: Team[] = await TeamRepository.getTeamsFromDB();

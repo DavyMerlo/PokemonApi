@@ -1,7 +1,7 @@
 import ErrorResponse from '../components/Error';
 import * as PokemonRepository from '../repositories/pokemonteam.repostiory';
 import * as TeamService from '../services/team.service';
-import * as Handler from '../helpers/error.handler';
+import * as Handler from '../helpers/ErrorGenerator';
 
 export async function addPokemons(teamId: number, pokemons: any[]): Promise<{ status: number, data: any | ErrorResponse }> {
     const teamExists = await TeamService.checkTeamExists(teamId);
