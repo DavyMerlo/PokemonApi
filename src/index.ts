@@ -31,7 +31,7 @@ const options = {
 }
 
 const PORT: number = parseInt(process.env.PORT as string, 10);
-const app = express();
+export const app = express();
 const v1Router = express.Router();
 const v2Router = express.Router();
 
@@ -50,6 +50,6 @@ v2Router.use("/pokemons", pokemonRouterV2);
 app.use("/api/v1", v1Router);
 app.use("/api/v2", v2Router);
 
-app.listen(PORT, () => {
+export const server = app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
 });
