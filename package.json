@@ -7,7 +7,7 @@
     "seed": "node --require esbuild-register prisma/seed.ts"
   },
   "scripts": {
-    "test": "jest --watchAll",
+    "test": "jest --watchAll --runInBand",
     "dev": "nodemon src/index.ts",
     "import": "node prisma/import.ts"
   },

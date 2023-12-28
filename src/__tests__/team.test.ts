@@ -1,7 +1,7 @@
 import supertest from 'supertest';
 import {app, server} from '../index';
 
-describe('Pokemon API', () => {
+describe('Team API', () => {
     describe('GET /api/v1/teams/{id}', () => {
         describe('given the team exists', () => {
             it('should return the specific team', async () => {
@@ -10,27 +10,54 @@ describe('Pokemon API', () => {
                 expect(response.status).toBe(200);
                 expect(response.body).toHaveProperty('id', 1);
                 expect(response.body).toHaveProperty('name', 'Fire Flames');
+                expect(response.body).toHaveProperty('pokemons');
+                expect(response.body.pokemons).toBeInstanceOf(Array);
+                expect(response.body).toHaveProperty('pokemons');
+                expect(Array.isArray(response.body.pokemons)).toBe(true);
+
+                if (Array.isArray(response.body.pokemons)) {
+                    const expectedPokemonIds = [1, 2, 3]; 
+                    expectedPokemonIds.forEach(expectedId => {
+                        const pokemonFound = response.body.pokemons.includes(expectedId);
+                        expect(pokemonFound).toBe(true);
+                    });
+                }
             });
         });
         describe('given the pokemon does not exist', () => {
             it('should return a 404', async () => {
-            const nonExistingTeamId = '20';
+            const nonExistingTeamId = '20000';
             const response = await supertest(app).get(`/api/v1/teams/${nonExistingTeamId}`);
             expect(response.status).toBe(404);
-            expect(response.body).toEqual({ error: 'Team not found', error_message: 'Team with 20 does not exist' });
+            expect(response.body).toEqual({ error: 'Team not found', error_message: 'Team with 20000 does not exist' });
             });
         });
     });
 
     describe('GET /api/v1/teams', () => {
         it('should return an array of all teams', async () => {
-            const teamsCount = 3;
             const response = await supertest(app).get('/api/v1/teams');
             expect(response.status).toBe(200);
             expect(response.body).toBeInstanceOf(Array);
             const pokemonsArray = response.body as any[];
-            expect(pokemonsArray).toHaveLength(teamsCount);
         });
+    });
+});
+
+describe('POST /api/v1/teams', () => {
+    it('should create a new team', async () => {
+        const newTeamData = {
+            name: 'Team Bleu Test',
+        };
+
+        const response = await supertest(app)
+            .post('/api/v1/teams')
+            .send(newTeamData)
+            .set('Accept', 'application/json');
+
+        expect(response.status).toBe(201); 
+        expect(response.body).toHaveProperty('id');
+        expect(response.body).toHaveProperty('name');
     });
 });
 
