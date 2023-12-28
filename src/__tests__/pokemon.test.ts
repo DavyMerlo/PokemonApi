@@ -1,7 +1,7 @@
 import supertest from 'supertest';
 import {app, server} from '../index';
 
-describe('Pokemon API', () => {
+describe('Pokemon Endpoints', () => {
     describe('GET /api/v1/pokemons/{id}', () => {
         describe('given the pokemon exists', () => {
             it('should return the specific pokemon', async () => {
@@ -28,11 +28,12 @@ describe('Pokemon API', () => {
 
     describe('GET /api/v1/pokemons', () => {
         it('should return an array of all pokemons', async () => {
+            const totalItems = 151;
             const response = await supertest(app).get('/api/v1/pokemons');
             expect(response.status).toBe(200);
             expect(response.body).toBeInstanceOf(Array);
             const pokemonsArray = response.body as any[];
-            expect(pokemonsArray).toHaveLength(152);
+            expect(pokemonsArray).toHaveLength(totalItems);
         });
     });
 
@@ -42,7 +43,7 @@ describe('Pokemon API', () => {
                 const currentPage = 2;
                 const pageSize = 10;
                 const totalPages = 16;
-                const totalItems = 152;
+                const totalItems = 151;
                 const response = await supertest(app).get(`/api/v2/pokemons?page=${currentPage}&pageSize=${pageSize}`);
                 expect(response.status).toBe(200);
                 expect(response.body).toHaveProperty('data');

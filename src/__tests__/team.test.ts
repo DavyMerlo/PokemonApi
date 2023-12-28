@@ -1,7 +1,7 @@
 import supertest from 'supertest';
 import {app, server} from '../index';
 
-describe('Team API', () => {
+describe('Team Endpoints', () => {
     describe('GET /api/v1/teams/{id}', () => {
         describe('given the team exists', () => {
             it('should return the specific team', async () => {
@@ -58,6 +58,22 @@ describe('POST /api/v1/teams', () => {
         expect(response.status).toBe(201); 
         expect(response.body).toHaveProperty('id');
         expect(response.body).toHaveProperty('name');
+    });
+});
+
+describe('POST /api/v1/teams/{id}', () => {
+    it('should create a set of pokemons by an existing teamId', async () => {
+        const existingTeamId = 1;
+        const setOfPokemons = [
+            5, 9 , 20, 25, 89, 23
+        ];
+
+        const response = await supertest(app)
+            .post(`/api/v1/teams/${existingTeamId}`)
+            .send({ pokemons: setOfPokemons })
+            .expect(200);
+
+        expect(response.body).toHaveProperty('success', true);
     });
 });
 
