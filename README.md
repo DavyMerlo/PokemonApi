@@ -1,6 +1,7 @@
 This is the backend(api) of a pokedex.
 For this project i used ExpressJs with Typescript.
 Further more i used Prisma to create,seed and doing CRUD call to the database.
+For testing i used Jest and Supertest(testing HTTP endpoints).
 
 
 Steps u need to follow in order to run this api server:
