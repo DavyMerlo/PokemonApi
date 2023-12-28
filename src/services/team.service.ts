@@ -21,7 +21,8 @@ export async function teamById(teamId: number): Promise<Team> {
 }
 
 export async function addTeam(name: string): Promise<Team> {
-    return await TeamRepository.addTeamToDb(name);
+    const team = await TeamRepository.addTeamToDb(name);
+    return mappingservice.mapTeam(team);
 }
 
 export async function checkTeamExists(teamId: number) {
