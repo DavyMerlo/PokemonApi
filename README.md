@@ -7,7 +7,7 @@ For testing i used Jest and Supertest(testing HTTP endpoints).
 Steps u need to follow in order to run this api server:
 => In the .env file u need to change:
     DATABASE_URL="postgresql://{yourpostgressusername}:{yourpostgresspassword}@localhost:5432/pokemon?schema=public"
-    PORT=3000
+    PORT={YourPortNumber}
 => Type in terminal 'npx prisma db push' to create the database.
 => Type in terminal 'npx prisma db seed' to seed the database with the 151 original pokemons, team and a demo-user.
 => Type in terminal 'npm run dev' to run the server. If everything goes fine 'Listening on port 3000' will appear.
