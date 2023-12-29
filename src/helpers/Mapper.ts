@@ -5,6 +5,7 @@ import Sprite from "../components/Sprite";
 import Stat from "../components/Stat";
 import Team from "../components/Team";
 import Type from "../components/Type";
+import User from "../components/User";
 import VersionGroupDetail from "../components/VersionGroupDetail";
 
 export const mapPokemon = (pokemon: any): Pokemon => {
@@ -86,4 +87,4 @@ export async function mapTeam(team: Team | null): Promise<Team> {
         name: team?.name || '',
         pokemons: pokemons,
     };
-}
+};

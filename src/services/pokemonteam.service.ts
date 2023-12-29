@@ -15,4 +15,4 @@ export async function addPokemonsToTeam(teamId: number, pokemons: any[]): Promis
     await PokemonRepository.addPokemonTeamToDb(teamId, pokemons);
     const team = await TeamService.teamById(teamId);
     return team;
-}
+};

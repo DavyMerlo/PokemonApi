@@ -8,6 +8,6 @@ type TeamUser = {
     teamId: number;
     user: User;
     userId: number;
-};
-
+  };
+  
 export default TeamUser;

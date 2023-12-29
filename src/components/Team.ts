@@ -1,3 +1,5 @@
+import TeamUser from "./TeamUser";
+
 type Team = {
     id: number;
     name: string;

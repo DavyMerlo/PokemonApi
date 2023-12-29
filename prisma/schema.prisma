@@ -91,22 +91,22 @@ model VersionGroupDetail {
 }
 
 model Team {
-  id              Int           @id @default(autoincrement())
-  name            String
-  users           User[]
-  pokemons        PokemonTeam[]
-  teamMemberships TeamUser[]
+  id        Int           @id @default(autoincrement())
+  name      String
+  users     User[]
+  pokemons  PokemonTeam[]
+  teamUsers TeamUser[]
 }
 
 model User {
-  id              Int        @id @default(autoincrement())
-  name            String
-  email           String     @unique
-  password        String
-  createdAt       DateTime   @default(now())
-  updatedAt       DateTime   @updatedAt
-  teams           Team[]
-  teamMemberships TeamUser[]
+  id         Int        @id @default(autoincrement())
+  name       String
+  email      String     @unique
+  password   String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  teams      Team[]
+  teamsUsers TeamUser[]
 }
 
 model PokemonTeam {
@@ -125,4 +125,6 @@ model TeamUser {
   teamId Int
   user   User @relation(fields: [userId], references: [id])
   userId Int
+
+  @@unique([teamId, userId])
 }
