@@ -5,22 +5,21 @@ import Sprite from "../components/Sprite";
 import Stat from "../components/Stat";
 import Team from "../components/Team";
 import Type from "../components/Type";
-import User from "../components/User";
 import VersionGroupDetail from "../components/VersionGroupDetail";
 
-export const mapPokemon = (pokemon: any): Pokemon => {
-    const types: Type[] = Array.isArray(pokemon.types) && pokemon.types.length > 0
-        ? pokemon.types.map((type: any) => ({
+export const mapPokemon = (pokemonDetails: any): Pokemon => {
+    const types: Type[] = Array.isArray(pokemonDetails.types) && pokemonDetails.types.length > 0
+        ? pokemonDetails.types.map((type: any) => ({
             name: type.name,
             slot: type.slot,
         }))
         : [];
 
     return {
-        id: pokemon.id,
-        name: pokemon.pokemon.name,
+        id: pokemonDetails.id,
+        name: pokemonDetails.pokemon.name,
         sprite: {
-            front_default: pokemon.sprite.frontDefault
+            front_default: pokemonDetails.sprite.frontDefault
         },
         types,
     };
