@@ -2,6 +2,7 @@ import {db} from "../src/utils/db.server";
 import * as fs from 'fs/promises';
 import path from 'path';
 import mapPokemonToDB from "./db.mapper";
+import {encodePassword} from '../src/utils/password.encoder';
 
 const readPokemonJson = async (): Promise<any[]> => {
   try {
@@ -11,15 +12,15 @@ const readPokemonJson = async (): Promise<any[]> => {
   } catch (error) {
       console.error('Error reading pokemon.json:', error);
       throw new Error('Failed to read pokemon.json');
-  }
+  };
 };
 
 async function createUser(): Promise<number> {
   const createdUser = await db.user.create({
     data: {
       name : 'Davy',
-      email : 'demo@live.be',
-      password: 'demo123',
+      email : 'davymerlo@live.be',
+      password: await encodePassword('wisemen'),
     }
   });
   console.log('Demo-user created:', createdUser);
