@@ -41,12 +41,11 @@ export async function ListOfPokemonsPaginated(
         return { data: mappedPokemon, metadata: metaData };
 }
 
-
 export async function pokemonById(
     pokemonId: number) {
         const pokemonExists = await PokemonRepository.pokemonExistsInDB(pokemonId);
         if (!pokemonExists) {
-            throw new CustomError(404, 'Pokemon not found', 'Pokemon with ' + pokemonId + ' does not exist');
+            throw new CustomError(404, 'Pokemon not found', 'Pokemon with Id ' + pokemonId + ' does not exist');
         }
         const pokemonFromDB = await PokemonRepository.getPokemonByIdFromDB(pokemonId);
         const abilities: Ability[] = mappingservice.mapAbilities(pokemonFromDB?.abilities || []);
@@ -57,7 +56,7 @@ export async function pokemonById(
 
         const pokemonDetails: PokemonDetail = {
             id: pokemonFromDB?.id || 0,
-            name: pokemonFromDB?.name || '',
+            name: pokemonFromDB?.pokemon.name || '',
             height: pokemonFromDB?.height || 0,
             weight: pokemonFromDB?.weight || 0,
             order: pokemonFromDB?.order || 0,

@@ -20,10 +20,9 @@ async function mapPokemonToDB(name: string, pokemonData: any): Promise<any> {
   
     const createdPokemon = await db.pokemon.create({
       data: {
-        name,
+        name : pokemonData.name,
         details: {
           create: {
-            name: pokemonData.name,
             height: pokemonData.height,
             weight: pokemonData.weight,
             order: pokemonData.order,
@@ -69,7 +68,7 @@ async function mapPokemonToDB(name: string, pokemonData: any): Promise<any> {
       include: {
         details: {
           include: {
-            pokemons: true,
+            pokemon: true,
           },
         },
       },

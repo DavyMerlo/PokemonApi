@@ -18,7 +18,7 @@ export const mapPokemon = (pokemon: any): Pokemon => {
 
     return {
         id: pokemon.id,
-        name: pokemon.name,
+        name: pokemon.pokemon.name,
         sprite: {
             front_default: pokemon.sprite.frontDefault
         },

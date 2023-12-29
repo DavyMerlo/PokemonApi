@@ -3,72 +3,17 @@ import PokemonDetail from '../components/PokemonDetail';
 import Pokemon from '../components/Pokemon';
 import SortingOptionsGenerator from '../helpers/SortingOptionsGenerator';
 
-export const getPokemonsFromDB = async (
-    sortParam: string | undefined): Promise<Pokemon[]> => {
+export const getPokemonsFromDB = async (sortParam: string | undefined) => {
     try {
         const orderBy = SortingOptionsGenerator(sortParam);
         const allPokemonsFromDB: any[] = await db.pokemonDetails.findMany({
             include: {
                 types: true,
                 sprite:true,
+                pokemon:true,
             },
-            orderBy: orderBy,
-        });
-        return allPokemonsFromDB;
-    } catch (error) {
-        throw new Error('Failed to fetch pokemons');
-    }
-};
-
-
-export const getPokemonByIdFromDB = async (pokemonId: number): Promise<PokemonDetail | null> => {
-    try {
-        const pokemonFromDB: any = await db.pokemonDetails.findUnique({
-            where: {
-                id: pokemonId,
-            },
-            select: {
-                id: true,
-                name: true,
-                height: true,
-                weight: true,
-                order: true,
-                species:true,
-                stats: true,
-                moves: {
-                    include: {
-                        versionGroupDetails: true,
-                    },
-                },
-                abilities: true,
-                sprite: true,
-                types: true,
-            },
-        });
-        return pokemonFromDB;
-    } catch (error) {
-        throw new Error('Failed to fetch Pokemon');
-    }
-};
-
-
-export const searchPokemonsFromDB = async (
-    query: string, 
-    limit: string | undefined): Promise<Pokemon[]> => {
-    try {
-        const searchQuery: any = query ? {
-            OR: [
-                { name: { contains: query, mode: 'insensitive' } },
-                { types: { some: { name: { contains: query, mode: 'insensitive' } } } },
-            ],
-        } : {};
-        const parsedLimit: number | undefined = limit ? parseInt(limit, 10) : undefined;
-        const allPokemonsFromDB: any[] = await db.pokemonDetails.findMany({
-            where: searchQuery,
-            take: parsedLimit,
-            include: {
-                types: true,
-                sprite:true,
+            orderBy: {
+                pokemon: orderBy
             },
         });
         return allPokemonsFromDB;
@@ -95,14 +40,73 @@ export const getPokemonsPaginatedFromDB = async (
             include: {
                 types: true,
                 sprite:true,
+                pokemon:true,
             },
-            orderBy: orderBy,
+            orderBy: {
+                pokemon: orderBy
+            },
             skip,
             take
         });
         return allPokemonsFromDB;
     } catch (error) {
         throw new Error('Failed to fetch paginated pokemons');
+    }
+};
+
+export const getPokemonByIdFromDB = async (pokemonId: number) => {
+    try {
+        const pokemonFromDB: any = await db.pokemonDetails.findUnique({
+            where: {
+                id: pokemonId,
+            },
+            select: {
+                id: true,
+                height: true,
+                weight: true,
+                order: true,
+                species:true,
+                stats: true,
+                moves: {
+                    include: {
+                        versionGroupDetails: true,
+                    },
+                },
+                abilities: true,
+                sprite: true,
+                types: true,
+                pokemon: true,
+            },
+        });
+        return pokemonFromDB;
+    } catch (error) {
+        throw new Error('Failed to fetch Pokemon');
+    }
+};
+
+export const searchPokemonsFromDB = async (
+    query: string, 
+    limit: string | undefined): Promise<Pokemon[]> => {
+    try {
+        const searchQuery: any = query ? {
+            OR: [
+                { pokemon: { name: { contains: query, mode: 'insensitive' } } },
+                { types: { some: { name: { contains: query, mode: 'insensitive' } } } },
+            ],
+        } : {};
+        const parsedLimit: number | undefined = limit ? parseInt(limit, 10) : undefined;
+        const allPokemonsFromDB: any[] = await db.pokemonDetails.findMany({
+            where: searchQuery,
+            take: parsedLimit,
+            include: {
+                types: true,
+                sprite:true,
+                pokemon:true,
+            },
+        });
+        return allPokemonsFromDB;
+    } catch (error) {
+        throw new Error('Failed to fetch pokemons');
     }
 };
 

@@ -11,16 +11,14 @@ datasource db {
 }
 
 model Pokemon {
-  id        Int            @id @default(autoincrement())
-  name      String         @unique
-  details   PokemonDetails @relation(fields: [detailsId], references: [id])
-  detailsId Int
-  teams     PokemonTeam[]
+  id      Int             @id @default(autoincrement())
+  name    String          @unique
+  details PokemonDetails?
+  teams   PokemonTeam[]
 }
 
 model PokemonDetails {
   id        Int       @id @default(autoincrement())
-  name      String    @unique
   height    Float
   weight    Float
   stats     Stat[]
@@ -28,9 +26,10 @@ model PokemonDetails {
   moves     Move[]
   order     Int
   species   String
-  pokemons  Pokemon[]
   types     Type[]
   sprite    Sprite?
+  pokemon   Pokemon?  @relation(fields: [pokemonId], references: [id])
+  pokemonId Int       @unique
 }
 
 model Sprite {
