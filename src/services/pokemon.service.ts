@@ -6,14 +6,14 @@ import PokemonDetail from '../components/PokemonDetail';
 import Pokemon from '../components/Pokemon';
 import Type from '../components/Type';
 import * as PokemonRepository from '../repositories/pokemon.repository';
-import * as mappingservice from '../helpers/Mapper';
+import {Mapper} from '../helpers/Mapper';
 import CustomError from '../components/CustomError';
 
 
 export async function listOfPokemons(
     sortParam: string | undefined) {
         const pokemonsFromDB = await PokemonRepository.getPokemonsFromDB(sortParam);
-        return pokemonsFromDB.map(mappingservice.mapPokemon);
+        return pokemonsFromDB.map(Mapper.mapPokemon);
 }
 
 export async function ListOfPokemonsPaginated(
@@ -26,7 +26,7 @@ export async function ListOfPokemonsPaginated(
         const pokemonFromDB = await PokemonRepository.getPokemonsPaginatedFromDB(
             sort, page, pageSize, offset, limit);
 
-        let mappedPokemon: Pokemon[] = pokemonFromDB.map(mappingservice.mapPokemon);
+        let mappedPokemon: Pokemon[] = pokemonFromDB.map(Mapper.mapPokemon);
         const countPokemon = (await PokemonRepository.getPokemonsFromDB(undefined)).length;
         const pages: number = Math.ceil(countPokemon / pageSize);
         const nextUrl = page < pages ? `${baseUrl}?page=${page + 1}&pageSize=${pageSize}` : null;
@@ -48,11 +48,11 @@ export async function pokemonById(
             throw new CustomError(404, 'Pokemon not found', 'Pokemon with Id ' + pokemonId + ' does not exist');
         }
         const pokemonFromDB = await PokemonRepository.getPokemonByIdFromDB(pokemonId);
-        const abilities: Ability[] = mappingservice.mapAbilities(pokemonFromDB?.abilities || []);
-        const stats: Stat[] = mappingservice.mapStats(pokemonFromDB?.stats || []);
-        const moves: Move[] = mappingservice.mapMoves(pokemonFromDB?.moves || []);
-        const types: Type[] = mappingservice.mapTypes(pokemonFromDB?.types || []);
-        const sprite: Sprite = mappingservice.mapSprites(pokemonFromDB?.sprite || []);
+        const abilities: Ability[] = Mapper.mapAbilities(pokemonFromDB?.abilities || []);
+        const stats: Stat[] = Mapper.mapStats(pokemonFromDB?.stats || []);
+        const moves: Move[] = Mapper.mapMoves(pokemonFromDB?.moves || []);
+        const types: Type[] = Mapper.mapTypes(pokemonFromDB?.types || []);
+        const sprite: Sprite = Mapper.mapSprites(pokemonFromDB?.sprite || []);
 
         const pokemonDetails: PokemonDetail = {
             id: pokemonFromDB?.id || 0,
@@ -74,7 +74,7 @@ export async function searchPokemons(
     query: string, 
     limit: string | undefined) {
         const pokemonsFromDB = await PokemonRepository.searchPokemonsFromDB(query, limit);
-        return pokemonsFromDB.map(mappingservice.mapPokemon);
+        return pokemonsFromDB.map(Mapper.mapPokemon);
 }
 
 export async function checkPokemonExists(pokemonId: number) {
