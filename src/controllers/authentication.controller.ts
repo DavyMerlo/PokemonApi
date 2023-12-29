@@ -1,11 +1,9 @@
-import express from 'express';
 import type { Request, Response } from 'express';
 import * as AuthenticationService from '../services/authentication.service';
-import e from 'express';
 import CustomError from '../components/CustomError';
-export const authenticationRouterV1 = express.Router();
 
-authenticationRouterV1.post("/authenticate", async (request: Request, response: Response) => {
+
+export async function authenticate(request: Request, response: Response): Promise<void>{
     const { email, password } = request.body;
     try {
         const user = await AuthenticationService.authenticateUser(email, password);
@@ -23,4 +21,4 @@ authenticationRouterV1.post("/authenticate", async (request: Request, response: 
           });
         }
     };
-});
+};

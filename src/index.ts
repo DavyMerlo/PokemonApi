@@ -1,10 +1,10 @@
 import * as dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
-import { authenticationRouterV1 } from './routers/authentication.router';
-import { pokemonRouterV1, pokemonRouterV2 } from './routers/pokemon.router';
-import { teamRouterV1 } from './routers/team.router';
-import { searchRouterV1 } from './routers/search.router';
+import { authenticationRouterV1 } from './routes/authentication.router';
+import { pokemonRouterV1, pokemonRouterV2 } from './routes/pokemon.router';
+import { teamRouterV1 } from './routes/team.router';
+import { searchRouterV1 } from './routes/search.router';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from "swagger-ui-express";
 import authorization from './middleware/auth';

@@ -1,8 +1,5 @@
 import express from 'express';
-import type { Request, Response } from 'express';
-import * as TeamService from '../services/team.service';
-import * as PokemonTeamService  from '../services/pokemonteam.service';
-import CustomError from '../components/CustomError';
+import * as TeamController from '../controllers/team.controller';
 export const teamRouterV1 = express.Router();
 
 /**
@@ -68,17 +65,7 @@ export const teamRouterV1 = express.Router();
  *               items:
  *                 $ref: '#/components/schemas/Pokemon'
  */
-teamRouterV1.get("/", async(request: Request, response: Response) => {
-    try{
-        const teams = await TeamService.listOfTeams();
-        if(teams){
-            return response.status(200).json(teams);
-        }
-        return response.status(404).json("No teams found");
-    }catch(error : any){
-        return response.status(500).json(error.message);
-    }
-});
+teamRouterV1.get("/", TeamController.listOfTeams);
 
 /**
  * @swagger
@@ -130,25 +117,7 @@ teamRouterV1.get("/", async(request: Request, response: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-teamRouterV1.get("/:id", async(request: Request, response: Response) => {
-    const teamId: number = parseInt(request.params.id, 10);
-    try{
-        const team = await TeamService.teamById(teamId);
-        response.json(team);
-    }catch (error) {
-        if (error instanceof CustomError) {
-          response.status(error.statusCode).json({
-            error: error.error,
-            error_message: error.error_message,
-          });
-        } else {
-          response.status(500).json({
-            error: 'InternalServerError',
-            error_message: 'Internal Server Error',
-          });
-        }
-    }
-});
+teamRouterV1.get("/:id", TeamController.teamById);
 
 /**
  * @swagger
@@ -210,16 +179,7 @@ teamRouterV1.get("/:id", async(request: Request, response: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/Team'
  */
-teamRouterV1.post("/", async(request: Request, response: Response) => {
-    try{
-        const {name} = request.body;
-        const newTeam = await TeamService.addTeam(name);
-        response.status(201).json(newTeam);
-
-    }catch(error : any){
-        return response.status(500).json(error.message);
-    }
-});
+teamRouterV1.post("/", TeamController.addTeam);
 
 /**
  * @swagger
@@ -283,23 +243,4 @@ teamRouterV1.post("/", async(request: Request, response: Response) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-teamRouterV1.post("/:id", async (request: Request, response: Response) => {
-    try {
-        const teamId = parseInt(request.params.id);
-        const { pokemons } = request.body;
-        const createdPokemonTeam = await PokemonTeamService.addPokemonsToTeam(teamId, pokemons);
-        response.json(createdPokemonTeam);
-    } catch (error) {
-        if (error instanceof CustomError) {
-          response.status(error.statusCode).json({
-            error: error.error,
-            error_message: error.error_message,
-          });
-        } else {
-          response.status(500).json({
-            error: 'InternalServerError',
-            error_message: 'Internal Server Error',
-          });
-        }
-    }
-});
+teamRouterV1.post("/:id", TeamController.addPokemonsToTeam);
