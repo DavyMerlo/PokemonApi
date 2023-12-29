@@ -10,6 +10,7 @@ export const getPokemonsFromDB = async (
         const allPokemonsFromDB: any[] = await db.pokemonDetails.findMany({
             include: {
                 types: true,
+                sprite:true,
             },
             orderBy: orderBy,
         });
@@ -50,6 +51,7 @@ export const getPokemonByIdFromDB = async (pokemonId: number): Promise<PokemonDe
     }
 };
 
+
 export const searchPokemonsFromDB = async (
     query: string, 
     limit: string | undefined): Promise<Pokemon[]> => {
@@ -66,6 +68,7 @@ export const searchPokemonsFromDB = async (
             take: parsedLimit,
             include: {
                 types: true,
+                sprite:true,
             },
         });
         return allPokemonsFromDB;
@@ -91,6 +94,7 @@ export const getPokemonsPaginatedFromDB = async (
         const allPokemonsFromDB: any[] = await db.pokemonDetails.findMany({
             include: {
                 types: true,
+                sprite:true,
             },
             orderBy: orderBy,
             skip,

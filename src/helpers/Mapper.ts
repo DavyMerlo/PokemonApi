@@ -19,7 +19,9 @@ export const mapPokemon = (pokemon: any): Pokemon => {
     return {
         id: pokemon.id,
         name: pokemon.name,
-        front_default: pokemon.sprite?.front_default,
+        sprite: {
+            front_default: pokemon.sprite.frontDefault
+        },
         types,
     };
 };

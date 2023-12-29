@@ -1,9 +1,10 @@
+import Sprite from './Sprite';
 import Type from './Type';
 
 type Pokemon = {
     id: number;
     name: string;
-    front_default?: string | null;
+    sprite: Sprite;
     types: Type[];
 };
 
