@@ -1,12 +1,19 @@
 import supertest from 'supertest';
 import {app, server} from '../index';
 
+const pokemonId = '1';
+const nonExistingPokemonId = '220';
+const totalItems = 151;
+const currentPage = 2;
+const pageSize = 10;
+const totalPages = 16;
+
 describe('Pokemon Endpoints', () => {
     describe('GET /api/v1/pokemons/{id}', () => {
         describe('given the pokemon exists', () => {
             it('should return the specific pokemon', async () => {
-                const pokemonId = '1';
-                const response = await supertest(app).get(`/api/v1/pokemons/${pokemonId}`);
+                const response = await supertest(app)
+                .get(`/api/v1/pokemons/${pokemonId}`);
                 expect(response.status).toBe(200);
                 expect(response.body).toHaveProperty('id', 1);
                 expect(response.body).toHaveProperty('name', 'bulbasaur');
@@ -18,18 +25,18 @@ describe('Pokemon Endpoints', () => {
         });
         describe('given the pokemon does not exist', () => {
             it('should return a 404', async () => {
-            const nonExistingPokemonId = '220';
-            const response = await supertest(app).get(`/api/v1/pokemons/${nonExistingPokemonId}`);
+            const response = await supertest(app)
+            .get(`/api/v1/pokemons/${nonExistingPokemonId}`);
             expect(response.status).toBe(404);
-            expect(response.body).toEqual({ error: 'Pokemon not found', error_message: 'Pokemon with 220 does not exist' });
+            expect(response.body).toEqual({ error: 'Pokemon not found', error_message: 'Pokemon with Id 220 does not exist' });
             });
         });
     });
 
     describe('GET /api/v1/pokemons', () => {
         it('should return an array of all pokemons', async () => {
-            const totalItems = 151;
-            const response = await supertest(app).get('/api/v1/pokemons');
+            const response = await supertest(app)
+            .get('/api/v1/pokemons');
             expect(response.status).toBe(200);
             expect(response.body).toBeInstanceOf(Array);
             const pokemonsArray = response.body as any[];
@@ -40,11 +47,8 @@ describe('Pokemon Endpoints', () => {
     describe('GET /api/v2/pokemons', () => {
         describe('get all pokemons paginated', () => {
             it('should return correct pagination metadata', async () => {
-                const currentPage = 2;
-                const pageSize = 10;
-                const totalPages = 16;
-                const totalItems = 151;
-                const response = await supertest(app).get(`/api/v2/pokemons?page=${currentPage}&pageSize=${pageSize}`);
+                const response = await supertest(app)
+                .get(`/api/v2/pokemons?page=${currentPage}&pageSize=${pageSize}`);
                 expect(response.status).toBe(200);
                 expect(response.body).toHaveProperty('data');
                 expect(response.body).toHaveProperty('metadata');

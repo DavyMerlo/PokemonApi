@@ -14,7 +14,7 @@ export async function listOfTeams(): Promise<Team[]> {
 export async function teamById(teamId: number): Promise<Team> {
     const teamExists = await TeamRepository.teamExistsInDB(teamId);
     if (!teamExists) {
-        throw new CustomError(404, 'Team not found', 'Team with Id' + teamId + ' does not exist');
+        throw new CustomError(404, 'Team not found', 'Team with Id ' + teamId + ' does not exist');
     }
     const team = await TeamRepository.getTeambyIdFromDB(teamId);
     return Mapper.mapTeam(team);

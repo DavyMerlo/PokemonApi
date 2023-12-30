@@ -1,10 +1,11 @@
 import supertest from 'supertest';
 import {app, server} from '../index';
 
+const nameContains = 'Char';
+
 describe('Search Endpoints', () => {
     describe('GET /api/v1/search', () => {
         it('should return an arrary of pokemons based on name or type', async () => {
-            const nameContains = 'Char';
             const response = await supertest(app)
             .get('/api/v1/search')
             .query({query: nameContains});
