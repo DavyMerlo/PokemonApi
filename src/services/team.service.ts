@@ -2,13 +2,14 @@ import Team from '../components/Team';
 import * as TeamRepository from '../repositories/team.repository';
 import {Mapper} from '../helpers/Mapper';
 import CustomError from '../components/CustomError';
+import { validationResult } from 'express-validator';
 
 export async function listOfTeams(){
     const listOfTeams: Team[] = await TeamRepository.getTeamsFromDB();
-        const mappedTeams: Promise<Team>[] = listOfTeams.map(async (team: Team) => {
-            return Mapper.mapTeam(team);
-        });
-        return await Promise.all(mappedTeams);
+    const mappedTeams: Promise<Team>[] = listOfTeams.map(async (team: Team) => {
+        return Mapper.mapTeam(team);
+    });
+    return await Promise.all(mappedTeams);
 }
 
 export async function teamById(teamId: number) {
@@ -26,10 +27,5 @@ export async function addTeam(name: string) {
 }
 
 export async function checkTeamExists(teamId: number) {
-    try{
-        return await TeamRepository.teamExistsInDB(teamId);
-    }
-    catch(error){
-        throw new Error('Failed to check');
-    }
-}
+    return await TeamRepository.teamExistsInDB(teamId);
+};

@@ -1,5 +1,6 @@
 import express from 'express';
 import * as TeamController from '../controllers/team.controller';
+import {validateAddTeam} from "../middleware/validation";
 export const teamRouterV1 = express.Router();
 
 /**
@@ -179,7 +180,7 @@ teamRouterV1.get("/:id", TeamController.teamById);
  *             schema:
  *               $ref: '#/components/schemas/Team'
  */
-teamRouterV1.post("/", TeamController.addTeam);
+teamRouterV1.post("/", validateAddTeam, TeamController.addTeam);
 
 /**
  * @swagger
