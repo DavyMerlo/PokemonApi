@@ -10,4 +10,4 @@ export async function authenticateUser(email: string, password: string) {
     }
     const token = hardCodedToken();
     return {token, user : userFromDb};
-}
+};

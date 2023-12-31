@@ -7,7 +7,7 @@ import { teamRouterV1 } from './routes/team.router';
 import { searchRouterV1 } from './routes/search.router';
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from "swagger-ui-express";
-import authorization from './middleware/auth';
+import authorization from './utils/auth';
 import { swaggerConfig } from './utils/swaggerConfig';
 
 dotenv.config();

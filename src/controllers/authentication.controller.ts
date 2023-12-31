@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import * as AuthenticationService from '../services/authentication.service';
-import {handleError} from '../utils/error.handler';
+import {handleError} from '../utils/handlers/error.handler';
 
 
 export async function authenticate(request: Request, response: Response): Promise<void>{

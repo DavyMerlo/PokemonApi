@@ -1,4 +1,4 @@
-import CustomError from "../components/CustomError";
+import CustomError from "../../components/CustomError";
 import type { Response } from 'express';
 
 

@@ -1,6 +1,6 @@
 import express from 'express';
 import * as TeamController from '../controllers/team.controller';
-import {validateAddTeam} from "../middleware/validation";
+import {validateAddPokemonToTeam, validateAddTeam} from "../utils/validators";
 export const teamRouterV1 = express.Router();
 
 /**
@@ -244,4 +244,4 @@ teamRouterV1.post("/", validateAddTeam, TeamController.addTeam);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-teamRouterV1.post("/:id", TeamController.addPokemonsToTeam);
+teamRouterV1.post("/:id", validateAddPokemonToTeam, TeamController.addPokemonsToTeam);

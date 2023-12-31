@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import * as PokemonService from '../services/pokemon.service';
-import {handleError} from '../utils/error.handler';
+import {handleError} from '../utils/handlers/error.handler';
 
 
 export async function listOfPokemons(request: Request, response: Response){

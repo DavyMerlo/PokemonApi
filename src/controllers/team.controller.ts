@@ -1,8 +1,8 @@
 import type { Request, Response } from 'express';
 import * as TeamService from '../services/team.service';
 import * as PokemonTeamService  from '../services/pokemonteam.service';
-import {handleError} from '../utils/error.handler';
-import {validationResult } from 'express-validator';
+import {handleError} from '../utils/handlers/error.handler';
+import validatateRequest from '../utils/handlers/validation.handler';
 
 export async function listOfTeams(request: Request, response: Response){
     try{
@@ -25,15 +25,7 @@ export async function teamById(request: Request, response: Response){
 
 export async function addTeam(request: Request, response: Response){
   try {
-      const errors = validationResult(request);
-      if (!errors.isEmpty()) {
-          const validationError = errors.array()[0].msg;
-          return response.status(400).json(
-            { 
-              error: 'Validation Error', 
-              error_message: validationError 
-            });
-      }
+      validatateRequest(request);
       const { name } = request.body;
       const result = await TeamService.addTeam(name);
       response.json(result);
@@ -44,10 +36,11 @@ export async function addTeam(request: Request, response: Response){
 
 export async function addPokemonsToTeam(request: Request, response: Response){
     try {
-        const teamId = parseInt(request.params.id);
-        const { pokemons } = request.body;
-        const createdPokemonTeam = await PokemonTeamService.addPokemonsToTeam(teamId, pokemons);
-        response.json(createdPokemonTeam);
+      validatateRequest(request);
+      const teamId = parseInt(request.params.id);
+      const { pokemons } = request.body;
+      const createdPokemonTeam = await PokemonTeamService.addPokemonsToTeam(teamId, pokemons);
+      response.json(createdPokemonTeam);
     } catch (error) {
       handleError(error, response);
   };
