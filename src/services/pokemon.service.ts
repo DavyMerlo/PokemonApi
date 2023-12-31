@@ -12,8 +12,11 @@ import CustomError from '../components/CustomError';
 
 export async function listOfPokemons(
     sortParam: string | undefined) {
-        const pokemonsFromDB = await PokemonRepository.getPokemonsFromDB(sortParam);
-        return pokemonsFromDB.map(Mapper.mapPokemon);
+    const pokemonsFromDB = await PokemonRepository.getPokemonsFromDB(sortParam);
+    if (!pokemonsFromDB || pokemonsFromDB.length === 0) {
+        throw new CustomError(404, 'Not Found', 'No pokemons found');
+    };
+    return pokemonsFromDB.map(Mapper.mapPokemon);
 }
 
 export async function ListOfPokemonsPaginated(
@@ -23,10 +26,12 @@ export async function ListOfPokemonsPaginated(
     offset: number | undefined, 
     limit: number | undefined,
     baseUrl: string) {
-        const pokemonFromDB = await PokemonRepository.getPokemonsPaginatedFromDB(
+        const pokemonsFromDB = await PokemonRepository.getPokemonsPaginatedFromDB(
             sort, page, pageSize, offset, limit);
-
-        let mappedPokemon: Pokemon[] = pokemonFromDB.map(Mapper.mapPokemon);
+        if (!pokemonsFromDB || pokemonsFromDB.length === 0) {
+            throw new CustomError(404, 'Not Found', 'No pokemons found');
+        };
+        const mappedPokemon: Pokemon[] = pokemonsFromDB.map(Mapper.mapPokemon);
         const countPokemon = (await PokemonRepository.getPokemonsFromDB(undefined)).length;
         const pages: number = Math.ceil(countPokemon / pageSize);
         const nextUrl = page < pages ? `${baseUrl}?page=${page + 1}&pageSize=${pageSize}` : null;
@@ -73,8 +78,11 @@ export async function pokemonById(
 export async function searchPokemons(
     query: string, 
     limit: string | undefined) {
-        const pokemonsFromDB = await PokemonRepository.searchPokemonsFromDB(query, limit);
-        return pokemonsFromDB.map(Mapper.mapPokemon);
+    const pokemonsFromDB = await PokemonRepository.searchPokemonsFromDB(query, limit);
+    if (!pokemonsFromDB || pokemonsFromDB.length === 0) {
+        throw new CustomError(404, 'Not Found', 'No pokemons found');
+    };
+    return pokemonsFromDB.map(Mapper.mapPokemon);
 }
 
 export async function checkPokemonExists(pokemonId: number) {

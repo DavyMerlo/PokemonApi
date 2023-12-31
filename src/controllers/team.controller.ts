@@ -7,18 +7,15 @@ import {validationResult } from 'express-validator';
 export async function listOfTeams(request: Request, response: Response){
     try{
         const teams = await TeamService.listOfTeams();
-        if(teams){
-            return response.status(200).json(teams);
-        }
-        return response.status(404).json("No teams found");
+        return response.json(teams);
     } catch (error) {
       handleError(error, response);
   };
 };
 
 export async function teamById(request: Request, response: Response){
-    const teamId: number = parseInt(request.params.id, 10);
     try{
+        const teamId: number = parseInt(request.params.id, 10);
         const team = await TeamService.teamById(teamId);
         response.json(team);
     }catch (error) {
@@ -27,16 +24,16 @@ export async function teamById(request: Request, response: Response){
 };
 
 export async function addTeam(request: Request, response: Response){
-  const errors = validationResult(request);
-  if (!errors.isEmpty()) {
-      const validationError = errors.array()[0].msg;
-      return response.status(400).json(
-        { 
-          error: 'Validation Error', 
-          error_message: validationError 
-        });
-  }
   try {
+      const errors = validationResult(request);
+      if (!errors.isEmpty()) {
+          const validationError = errors.array()[0].msg;
+          return response.status(400).json(
+            { 
+              error: 'Validation Error', 
+              error_message: validationError 
+            });
+      }
       const { name } = request.body;
       const result = await TeamService.addTeam(name);
       response.json(result);

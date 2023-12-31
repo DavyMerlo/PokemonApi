@@ -2,14 +2,18 @@ import Team from '../components/Team';
 import * as TeamRepository from '../repositories/team.repository';
 import {Mapper} from '../helpers/Mapper';
 import CustomError from '../components/CustomError';
-import { validationResult } from 'express-validator';
 
 export async function listOfTeams(){
-    const listOfTeams: Team[] = await TeamRepository.getTeamsFromDB();
-    const mappedTeams: Promise<Team>[] = listOfTeams.map(async (team: Team) => {
-        return Mapper.mapTeam(team);
-    });
-    return await Promise.all(mappedTeams);
+    const teamsFromDB: Team[] = await TeamRepository.getTeamsFromDB();
+    if (!teamsFromDB || teamsFromDB.length === 0) {
+        throw new CustomError(404, 'Not Found', 'No teams found');
+    }
+    const mappedTeams: Team[] = [];
+    for (const team of teamsFromDB) {
+        const mappedTeam = Mapper.mapTeam(team);
+        mappedTeams.push(mappedTeam);
+    }
+    return mappedTeams;
 }
 
 export async function teamById(teamId: number) {
