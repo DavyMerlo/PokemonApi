@@ -2,7 +2,7 @@ import CustomError from '../components/CustomError';
 import * as PokemonRepository from '../repositories/pokemonteam.repostiory';
 import * as TeamService from '../services/team.service';
 
-export async function addPokemonsToTeam(teamId: number, pokemons: any[]): Promise<any> {
+export async function addPokemonsToTeam(teamId: number, pokemons: any[]){
     const teamExists = await TeamService.checkTeamExists(teamId);
     if (!teamExists) {
         throw new CustomError(404, 'Team not found', 'Team with ' + teamId + ' does not exist');

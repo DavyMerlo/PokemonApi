@@ -21,7 +21,7 @@ async function importPokemon(providedValue: number | string): Promise<any> {
             await mapPokemonToDB(name, pokemon);
         })
         .catch((error) => {
-            console.error('Please provide a valid Pokémon ID or name as a command-line argument.', error.message);
+            console.error('Please provide a valid Pokemon ID or name as parameter.', error.message);
         });;
 };
 

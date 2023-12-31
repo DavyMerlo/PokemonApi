@@ -3,6 +3,7 @@ import * as fs from 'fs/promises';
 import path from 'path';
 import mapPokemonToDB from "./db.mapper";
 import {encodePassword} from '../src/utils/password.encoder';
+import {hardCodedToken} from '../src/config/token';
 
 const readPokemonJson = async (): Promise<any[]> => {
   try {
@@ -20,7 +21,7 @@ async function createUser(): Promise<number> {
     data: {
       name : 'Davy',
       email : 'davymerlo@live.be',
-      password: await encodePassword('wisemen'),
+      password: await encodePassword(hardCodedToken()),
     }
   });
   console.log('Demo-user created:', createdUser);
@@ -64,11 +65,11 @@ async function createTeamUserAndAssociatePokemon(teamName: string, pokemonIds: n
     const teamId = await createTeam(teamName);
     console.log(`Team ${teamName} created with ID: ${teamId}`);
     await createPokemonTeam(teamId, pokemonIds);
-    console.log(`Pokemons associated with the team ${teamName} successfully`);
+    console.log(`Pokemons added to team ${teamName} successfully`);
     const userId =  await createUser();
     await createTeamUser(teamId,userId);
   } catch (error) {
-    console.error('Error creating team and associating Pokemons:', error);
+    console.error('Error creating team and adding Pokemons:', error);
   }
 }
 

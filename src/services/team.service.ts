@@ -3,7 +3,7 @@ import * as TeamRepository from '../repositories/team.repository';
 import {Mapper} from '../helpers/Mapper';
 import CustomError from '../components/CustomError';
 
-export async function listOfTeams(): Promise<Team[]> {
+export async function listOfTeams(){
     const listOfTeams: Team[] = await TeamRepository.getTeamsFromDB();
         const mappedTeams: Promise<Team>[] = listOfTeams.map(async (team: Team) => {
             return Mapper.mapTeam(team);
@@ -11,7 +11,7 @@ export async function listOfTeams(): Promise<Team[]> {
         return await Promise.all(mappedTeams);
 }
 
-export async function teamById(teamId: number): Promise<Team> {
+export async function teamById(teamId: number) {
     const teamExists = await TeamRepository.teamExistsInDB(teamId);
     if (!teamExists) {
         throw new CustomError(404, 'Team not found', 'Team with Id ' + teamId + ' does not exist');
@@ -20,7 +20,7 @@ export async function teamById(teamId: number): Promise<Team> {
     return Mapper.mapTeam(team);
 }
 
-export async function addTeam(name: string): Promise<Team> {
+export async function addTeam(name: string) {
     const team = await TeamRepository.addTeamToDb(name);
     return Mapper.mapTeam(team);
 }
