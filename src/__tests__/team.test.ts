@@ -51,41 +51,42 @@ describe('Team Endpoints', () => {
             const pokemonsArray = response.body as any[];
         });
     });
-});
 
-describe('POST /api/v1/teams', () => {
-    it('should create a new team', async () => {
-        const token = 'wisemen'
-        const response = await supertest(app)
-            .post('/api/v1/teams')
-            .send(newTeamData)
-            .set('Accept', 'application/json')
-            .set('Authorization', `Bearer ${token}`);
-
-        expect(response.status).toBe(201); 
-        expect(response.body).toHaveProperty('id');
-        expect(response.body).toHaveProperty('name');
+    describe('POST /api/v1/teams', () => {
+        it('should create a new team', async () => {
+            const token = 'wisemen'
+            const response = await supertest(app)
+                .post('/api/v1/teams')
+                .send(newTeamData)
+                .set('Accept', 'application/json')
+                .set('Authorization', `Bearer ${token}`);
+    
+            expect(response.status).toBe(201); 
+            expect(response.body).toHaveProperty('id');
+            expect(response.body).toHaveProperty('name');
+        });
+    });
+    
+    describe('POST /api/v1/teams/{id}', () => {
+        it('should create a set of pokemons by an existing teamId', async () => {
+            const response = await supertest(app)
+                .post(`/api/v1/teams/${teamId}`)
+                .send({ pokemons: setOfPokemons })
+                .set('Authorization', `Bearer ${token}`)
+                .expect(400);
+        });
+    });
+    
+    afterAll((done) => {
+        server.close((err) => {
+            if (err) {
+                console.error('Error closing server:', err);
+                done.fail(err);
+            } else {
+                console.log('Server closed');
+                done();
+            }
+        });
     });
 });
 
-describe('POST /api/v1/teams/{id}', () => {
-    it('should create a set of pokemons by an existing teamId', async () => {
-        const response = await supertest(app)
-            .post(`/api/v1/teams/${teamId}`)
-            .send({ pokemons: setOfPokemons })
-            .set('Authorization', `Bearer ${token}`)
-            .expect(400);
-    });
-});
-
-afterAll((done) => {
-    server.close((err) => {
-        if (err) {
-            console.error('Error closing server:', err);
-            done.fail(err);
-        } else {
-            console.log('Server closed');
-            done();
-        }
-    });
-});

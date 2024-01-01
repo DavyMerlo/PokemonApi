@@ -60,17 +60,19 @@ describe('Pokemon Endpoints', () => {
             });
         });
     });
-});
 
-afterAll((done) => {
-    server.close((err) => {
-        if (err) {
-            console.error('Error closing server:', err);
-            done.fail(err);
-        } else {
-            console.log('Server closed');
-            done();
-        }
+    afterAll((done) => {
+        server.close((err) => {
+            if (err) {
+                console.error('Error closing server:', err);
+                done.fail(err);
+            } else {
+                console.log('Server closed');
+                done();
+            }
+        });
     });
 });
+
+
 
