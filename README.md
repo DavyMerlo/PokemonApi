@@ -25,3 +25,4 @@ Now you can use it in Postman or Swagger ('http://localhost:3000/api-docs/'),...
 => Type in terminal 'npx ts-node prisma/import.ts {PokemonIdorPokemonName}' to add a pokemon from the external service to the database.
 
 OR u can run this in docker: Type in terminal 'docker-compose up'
+=> To import a pokemon in docker, type: 'npm run add-pokemon {NameOrId}'
