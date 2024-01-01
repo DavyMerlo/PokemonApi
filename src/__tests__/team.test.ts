@@ -5,7 +5,7 @@ const teamId = '1';
 const nonExistingTeamId = '20000';
 const token = 'wisemen';
 const expectedPokemonIds = [1, 2, 3]; 
-const setOfPokemons = [150];
+const setOfPokemons = [150,140,130];
 const newTeamData = {name: 'Team Bleu Test'};
 
 describe('Team Endpoints', () => {

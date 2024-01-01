@@ -28,7 +28,7 @@ export async function addTeam(request: Request, response: Response){
       validatateRequest(request);
       const { name } = request.body;
       const result = await TeamService.addTeam(name);
-      response.json(result);
+      response.status(201).json(result);
   } catch (error) {
       handleError(error, response);
   };
@@ -40,7 +40,7 @@ export async function addPokemonsToTeam(request: Request, response: Response){
       const teamId = parseInt(request.params.id);
       const { pokemons } = request.body;
       const createdPokemonTeam = await PokemonTeamService.addPokemonsToTeam(teamId, pokemons);
-      response.json(createdPokemonTeam);
+      response.status(201).json(createdPokemonTeam);
     } catch (error) {
       handleError(error, response);
   };
