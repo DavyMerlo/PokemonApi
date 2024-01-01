@@ -23,3 +23,5 @@ Steps u need to follow in order to run this api server:
 Now you can use it in Postman or Swagger ('http://localhost:3000/api-docs/'),...;
 
 => Type in terminal 'npx ts-node prisma/import.ts {PokemonIdorPokemonName}' to add a pokemon from the external service to the database.
+
+OR u can run this in docker: Type in terminal 'docker-compose up'
