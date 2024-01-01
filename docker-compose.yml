@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:11
+    restart: always
+    environment:
+      POSTGRES_DB: pokemon
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: merlo
+    ports:
+      - "5432:5432"
