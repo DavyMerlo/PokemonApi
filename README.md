@@ -6,6 +6,10 @@ For testing i used Jest and Supertest(testing HTTP endpoints).
 
 Steps u need to follow in order to run this api server:
 
+=> install node
+
+=> Type in terminal 'npm install' to install the needed dependencies.
+
 => In the .env file u need to change:
     DATABASE_URL="postgresql://{yourpostgressusername}:{yourpostgresspassword}@localhost:5432/pokemon?schema=public"
     PORT={YourPortNumber}
