@@ -23,6 +23,17 @@ export async function pokemonById(request: Request, response: Response){
     };
 };
 
+export async function pokemonImageById(request: Request, response: Response){
+  try {
+      const pokemonId: number = parseInt(request.params.id, 10);
+      const imageBuffer = await PokemonService.pokemonImageById(pokemonId);
+      response.set('Content-Type', 'image/png');
+      response.send(imageBuffer);
+    }catch (error) {
+      handleError(error, response);
+  };
+};
+
 export async function listOfPokemonsPaginated(request: Request, response: Response) {
     try {
         const page = Number(request.query.page) || 1;

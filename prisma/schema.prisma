@@ -43,6 +43,7 @@ model Sprite {
   backFemale       String?
   backShiny        String?
   backShinyFemale  String?
+  image            Bytes?
   pokemonDetail    PokemonDetails? @relation(fields: [pokemonDetailsId], references: [id])
   pokemonDetailsId Int?            @unique
 }

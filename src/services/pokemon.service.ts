@@ -17,7 +17,7 @@ export async function listOfPokemons(
         throw new CustomError(404, 'Not Found', 'No pokemons found');
     };
     return pokemonsFromDB.map(Mapper.mapPokemon);
-}
+};
 
 export async function ListOfPokemonsPaginated(
     sort: string | undefined, 
@@ -44,7 +44,7 @@ export async function ListOfPokemonsPaginated(
             previous: previousUrl,
         };
         return { data: mappedPokemon, metadata: metaData };
-}
+};
 
 export async function pokemonById(
     pokemonId: number) {
@@ -73,7 +73,17 @@ export async function pokemonById(
             types: types,
         };
         return pokemonDetails;
-}
+};
+
+export async function pokemonImageById(pokemonId: number) {
+    const pokemonExists = await PokemonRepository.pokemonExistsInDB(pokemonId);
+    if (!pokemonExists) {
+        throw new CustomError(404, 'Pokemon not found', 'Pokemon with Id ' + pokemonId + ' does not exist');
+    }
+    const pokemonImageFromDB = await PokemonRepository.getPokemonImageByIdFromDB(pokemonId);
+    const imageBuffer = pokemonImageFromDB?.sprite?.image;
+    return imageBuffer;
+};
 
 export async function searchPokemons(
     query: string, 
@@ -83,8 +93,8 @@ export async function searchPokemons(
         throw new CustomError(404, 'Not Found', 'No pokemons found');
     };
     return pokemonsFromDB.map(Mapper.mapPokemon);
-}
+};
 
 export async function checkPokemonExists(pokemonId: number) {
     return await PokemonRepository.pokemonExistsInDB(pokemonId);
-}
+};

@@ -13,7 +13,8 @@
     "build": "tsc",
     "start": "nodemon src/index.ts",
     "migrate:up": "npx prisma db push",
-    "seed:db": "npx prisma db seed"
+    "seed:db": "npx prisma db seed",
+    "add-pokemon": "npx ts-node prisma/import.ts"
   },
   "keywords": [],
   "author": "",

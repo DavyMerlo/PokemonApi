@@ -279,3 +279,35 @@ pokemonRouterV1.get("/:id", PokemonController.pokemonById);
  *               $ref: '#/components/schemas/Error'
  */
 pokemonRouterV2.get("/", PokemonController.listOfPokemonsPaginated);
+
+/**
+ * @swagger
+ * /api/v2/pokemons/{id}/image:
+ *   get:
+ *     summary: Get a pokemon image by ID
+ *     tags:
+ *       - Pokemons
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         description: The ID of the pokemon to retrieve
+ *         required: true
+ *         schema:
+ *           type: integer
+ *           format: int64
+ *     responses:
+ *       200:
+ *         description: Successful operation
+ *         content:
+ *           image/png:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       404:
+ *         description: Pokemon not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Error'
+ */
+pokemonRouterV2.get("/:id/image", PokemonController.pokemonImageById);

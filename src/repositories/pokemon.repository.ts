@@ -84,6 +84,22 @@ export const getPokemonByIdFromDB = async (pokemonId: number) => {
     }
 };
 
+export const getPokemonImageByIdFromDB = async (pokemonId: number) => {
+    try {
+        const pokemonImageFromDB: any = await db.pokemonDetails.findUnique({
+            where: {
+                id: pokemonId,
+            },
+            select: {
+                sprite: true,
+            },
+        });
+        return pokemonImageFromDB;
+    } catch (error) {
+        throw new Error('Failed to fetch Pokemon');
+    }
+};
+
 export const searchPokemonsFromDB = async (
     query: string, 
     limit: string | undefined): Promise<Pokemon[]> => {
